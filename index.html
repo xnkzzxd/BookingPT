@@ -2,9 +2,37 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Booking</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Coach Jizdan · XNK Personal Training</title>
+    <meta name="description" content="Personal trainer berbasis sport science di Banjarnegara & Purwokerto bersama Coach Jizdan: fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.">
+    <link rel="canonical" href="https://xnkbooking.my.id/">
+    <meta name="theme-color" content="#ECECEC">
+
+    <!-- Preview saat link dibagikan (WhatsApp, Instagram, Facebook, X) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="XNK Personal Training">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:url" content="https://xnkbooking.my.id/">
+    <meta property="og:title" content="Coach Jizdan · Personal Trainer Banjarnegara & Purwokerto">
+    <meta property="og:description" content="Move better. Get stronger. Perform better. Program personal berbasis sport science, 1 sesi trial gratis.">
+    <meta property="og:image" content="https://xnkbooking.my.id/img/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Coach Jizdan tampak punggung di depan tulisan JIZDAN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Coach Jizdan · XNK Personal Training">
+    <meta name="twitter:description" content="Personal trainer berbasis sport science di Banjarnegara & Purwokerto.">
+    <meta name="twitter:image" content="https://xnkbooking.my.id/img/og.jpg">
+
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Aplikasi (Apps Script) & foto hero dimuat lebih awal -->
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="preconnect" href="https://script.googleusercontent.com">
+    <link rel="preload" as="image" href="/img/hero-cutout.webp" crossorigin="anonymous">
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-93SRTYH3SG"></script>
     <script>
@@ -14,25 +42,126 @@
 
       gtag('config', 'G-93SRTYH3SG');
     </script>
-    
+
     <style>
-        body, html {
+        html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background-color: #000000; /* Latar hitam untuk menghindari kilatan putih sebelum iframe dimuat */
+            /* Sama dengan latar halaman: tidak ada kilatan warna sebelum aplikasi tampil */
+            background: #ECECEC;
         }
         iframe {
+            display: block;
             width: 100%;
+            height: 100vh;
+            height: 100dvh; /* mengikuti toolbar browser HP */
+            border: 0;
+            background: #ECECEC;
+        }
+        /* Layar tunggu: menyatu dengan intro 00–100 di dalam halaman */
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            padding: 24px;
+            box-sizing: border-box;
+            background: #ECECEC;
+            color: #0B0B0B;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            text-align: center;
+            transition: opacity .5s ease, visibility .5s ease;
+        }
+        .screen.done {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .mark {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: #0B0B0B;
+            display: grid;
+            place-items: center;
+        }
+        .mark svg {
+            width: 30px;
+            height: 30px;
+        }
+        .bar {
+            width: min(260px, 60vw);
+            height: 2px;
+            background: rgba(11, 11, 11, .12);
+            overflow: hidden;
+        }
+        .bar i {
+            display: block;
+            width: 40%;
             height: 100%;
-            border: none;
+            background: #0B0B0B;
+            animation: slide 1.2s cubic-bezier(.76, 0, .24, 1) infinite;
+        }
+        @keyframes slide {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(250%); }
+        }
+        .cap {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: #565656;
+        }
+        .screen a {
+            color: #0B0B0B;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .screen a[hidden] {
+            display: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .bar i { animation-duration: 3s; }
         }
     </style>
 </head>
 <body>
 
-    <iframe src="https://script.google.com/macros/s/AKfycbyVOm1Csc7UmCxPe3buHUkZkIaskguIRgT8dvTJw_aaTAX5UYY_-irjDi1X6vOD1BgJ/exec?view=Landing"></iframe>
+    <iframe id="app" title="Coach Jizdan · XNK Personal Training" allow="accelerometer; gyroscope; fullscreen" src="https://script.google.com/macros/s/AKfycbyVOm1Csc7UmCxPe3buHUkZkIaskguIRgT8dvTJw_aaTAX5UYY_-irjDi1X6vOD1BgJ/exec?view=Landing"></iframe>
+
+    <div class="screen" id="loader" role="status" aria-live="polite">
+        <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span>
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <p class="cap">XNK Personal Training · Coach Jizdan</p>
+        <a id="fallback" target="_blank" rel="noopener" hidden>Tidak muncul? Buka di tab baru</a>
+    </div>
+
+    <noscript>
+        <div class="screen">
+            <p class="cap">Aktifkan JavaScript untuk membuka halaman ini.</p>
+        </div>
+    </noscript>
+
+    <script>
+        (function () {
+            var app = document.getElementById('app');
+            var loader = document.getElementById('loader');
+            var fallback = document.getElementById('fallback');
+            fallback.href = app.src;
+            app.addEventListener('load', function () {
+                loader.classList.add('done');
+            });
+            setTimeout(function () {
+                fallback.hidden = false;
+            }, 8000);
+        })();
+    </script>
 
 </body>
 </html>

@@ -199,3 +199,43 @@ test('home: visible keyword section under the iframe, real text, links resolve, 
   assert.ok(!/display:\s*none|visibility:\s*hidden|text-indent:\s*-|left:\s*-\d{3,}|font-size:\s*0|opacity:\s*0[;"]/i.test(main), 'no hiding techniques in the visible section');
   assert.ok(h.indexOf('<iframe') < h.indexOf('<!--SEO-MAIN:START-->'));
 });
+
+// ── trust pages ──────────────────────────────────────────────────────────────
+test('trust pages: /tentang/ and /privasi/ exist, indexable, one h1, linked from footer, sitemap and home', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: LOKASI_FULL });
+  for (const slug of ['tentang', 'privasi']) {
+    const h = out[slug + '/index.html'];
+    assert.ok(h, slug);
+    assert.equal((h.match(/<h1[ >]/g) || []).length, 1, slug + ' h1');
+    assert.match(h, new RegExp('<link rel="canonical" href="https://xnkbooking\\.my\\.id/' + slug + '/">'));
+    assert.match(h, /index, follow/);
+    assert.ok(out['sitemap.xml'].includes('/' + slug + '/'));
+    assert.ok(out['llms.txt'].includes('/' + slug + '/'));
+    for (const page of ['harga/index.html', 'personal-trainer-purwokerto/index.html']) assert.ok(out[page].includes('href="/' + slug + '/"'), page + ' footer links ' + slug);
+  }
+  assert.ok(out['index.html'].includes('class="trust-strip"') && out['index.html'].includes('href="/tentang/"') && out['index.html'].includes('href="/privasi/"'));
+});
+
+test('trust pages: say what we never ask, payment text equals the FAQ, address comes from data, nothing hidden', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: LOKASI_FULL });
+  const t = decode(out['tentang/index.html']);
+  assert.ok(t.includes('Kami tidak pernah meminta kata sandi, PIN, atau kode OTP kamu.'));
+  assert.ok(t.includes('Pembayaran dilakukan di awal per paket'));
+  assert.ok(t.includes('Studio X') && t.includes('Jl. Contoh No. 1'));
+  assert.ok(t.includes('Banjarnegara:') && t.includes('area layanan'));
+  const none = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  assert.ok(!decode(none['tentang/index.html']).includes('Jl. Contoh'), 'no address invented');
+  const p = decode(out['privasi/index.html']);
+  assert.ok(p.includes('Foto progres bersifat pribadi') && p.includes('tidak dijual'));
+  for (const h of [out['tentang/index.html'], out['privasi/index.html'], out['index.html']]) assert.ok(!/display:\s*none|visibility:\s*hidden|text-indent:\s*-|font-size:\s*0/i.test(h.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<script[\s\S]*?<\/script>/g, '')), 'no hiding techniques');
+});
+
+test('security.txt is valid (RFC 9116 fields, real line breaks) and the business JSON-LD has a ContactPoint', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  const lines = out['.well-known/security.txt'].split('\n');
+  assert.ok(lines[0].startsWith('Contact: https://wa.me/'));
+  assert.ok(lines.some(l => /^Expires: \d{4}-\d{2}-\d{2}T/.test(l)));
+  assert.ok(!out['.well-known/security.txt'].includes('\\n'));
+  const biz = jsonLd(out['index.html']).find(b => b['@type'] === 'ProfessionalService');
+  assert.equal(biz.contactPoint.telephone, '+6288221254305');
+});

@@ -85,3 +85,15 @@ Kirim ke media Banyumas/Banjarnegara cerita singkat: mahasiswa UNSOED juara sena
 1. Kirim URL profil ke Claude supaya ditambahkan ke data terstruktur (`sameAs`).
 2. Di Search Console: kirim sitemap `https://xnkbooking.my.id/sitemap.xml`, lalu "Minta pengindeksan" untuk halaman beranda, 2 halaman kota, halaman online, dan `/harga/`.
 3. Cek peringkat tiap 2 minggu untuk: "personal trainer purwokerto", "personal trainer banjarnegara", "personal trainer online purwokerto", "personal trainer online banjarnegara". Hasil biasanya butuh beberapa minggu sampai bulan.
+
+## 6. Kalau Google menampilkan ringkasan AI yang salah ("penipuan")
+
+Kasus Oktober 2026: ringkasan AI Google menyebut situs ini penipuan karena ada postingan Threads (sekitar April 2026) yang membagikan link situs dengan kalimat ajakan ("kalian ada yang pake tools kaya gini ga buat ngurus jadwal atau booking dari klien?") dan ada balasan yang menuduh postingan itu penipuan. Itu soal gaya postingannya, bukan situs ini.
+
+1. **Hapus atau edit postingan Threads asli** yang memuat link (atau minta yang memposting menghapusnya). Tanpa postingan itu, balasannya kehilangan konteks dan hasilnya hilang dari Google setelah dirayapi ulang.
+2. Jangan membalas dengan defensif. Kalau perlu satu balasan tenang: "Ini halaman booking personal trainer saya, tidak ada pembayaran di situs. Info: https://xnkbooking.my.id/tentang/".
+3. **Laporkan ringkasan AI**: di hasil pencarian, tekan jempol ke bawah / "Laporkan" pada Ringkasan AI dan jelaskan bahwa situs ini milik personal trainer.
+4. **Cek tanda bahaya sungguhan:** Search Console → Keamanan & tindakan manual, dan https://transparencyreport.google.com/safe-browsing/search (isi `xnkbooking.my.id`).
+5. Setelah halaman `/tentang/` dan `/privasi/` tayang: "Minta pengindeksan" untuk beranda, `/tentang/`, dan `/privasi/`.
+6. Jangan membagikan link situs dengan kalimat ajakan "ada yang pakai tools kayak gini?" di media sosial. Itu mirip pola postingan penipuan. Bagikan dengan kalimat biasa: siapa kamu, di mana melatih, dan link ke halaman kota.
+7. Perbanyak penyebutan asli (profil Google Bisnis, ulasan, Instagram, link dari Wellness Gym). Itu yang membuat ringkasan AI berganti dari "tidak dikenal" menjadi deskripsi yang benar.

@@ -1,0 +1,14 @@
+# XNK Personal Training
+
+> Coach Jizdan adalah personal trainer berbasis sport science di Banjarnegara dan Purwokerto, Jawa Tengah, Indonesia. Program: Fat Loss, Muscle Building, Strength & Conditioning, Sports Performance. Tersedia 1 sesi trial gratis.
+
+## Halaman
+
+- [Beranda](https://xnkbooking.my.id/): profil coach, program, jadwal slot kosong, FAQ
+- [Harga](https://xnkbooking.my.id/harga/): daftar paket dan harga (Rupiah)
+- [Booking klien](https://book.xnkbooking.my.id/): login dengan nomor WhatsApp dan booking sesi
+
+## Kontak
+
+- WhatsApp: +6288221254305
+- Lokasi: Banjarnegara, Purwokerto

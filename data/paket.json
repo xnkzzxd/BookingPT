@@ -1,10 +1,340 @@
 {
-  "updatedAt": null,
+  "updatedAt": "2026-10-01T13:57:06.559Z",
   "categories": [
-    { "id": "student", "label": "Student" },
-    { "id": "college", "label": "College" },
-    { "id": "regular", "label": "Regular" },
-    { "id": "premium", "label": "Premium" }
+    {
+      "id": "student",
+      "label": "Student"
+    },
+    {
+      "id": "college",
+      "label": "College"
+    },
+    {
+      "id": "regular",
+      "label": "Regular"
+    },
+    {
+      "id": "premium",
+      "label": "Premium"
+    }
   ],
-  "packages": []
+  "packages": [
+    {
+      "id": "STUDENT_BASIC",
+      "namaPaket": "Student Basic",
+      "kategori": "student",
+      "harga": 250000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket pelajar untuk memulai latihan dengan biaya terjangkau",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "STUDENT_PLUS",
+      "namaPaket": "Student Plus",
+      "kategori": "student",
+      "harga": 450000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket pelajar dengan frekuensi latihan lebih tinggi",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "STUDENT_PRO",
+      "namaPaket": "Student Pro",
+      "kategori": "student",
+      "harga": 500000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket pelajar untuk progres latihan yang lebih optimal",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "STUDENT_1S",
+      "namaPaket": "1 Sesi",
+      "kategori": "student",
+      "harga": 75000,
+      "jumlahSesi": 1,
+      "durasi": "1 Bulan",
+      "deskripsi": "Hanya Pendampingan 1 Sesi",
+      "benefit": [
+        "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT001",
+      "namaPaket": "Mahasiswa Session Only",
+      "kategori": "college",
+      "harga": 250000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Sesi latihan fleksibel, simpel, hemat tanpa komitmen program",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT002",
+      "namaPaket": "Mahasiswa Session Only",
+      "kategori": "college",
+      "harga": 450000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Sesi latihan fleksibel, simpel, hemat tanpa komitmen program",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT005",
+      "namaPaket": "Mahasiswa Paket Pelatihan Core",
+      "kategori": "college",
+      "harga": 400000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT006",
+      "namaPaket": "Mahasiswa Paket Pelatihan Core",
+      "kategori": "college",
+      "harga": 700000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT007",
+      "namaPaket": "Mahasiswa Paket Pelatihan Core",
+      "kategori": "college",
+      "harga": 900000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT_1S",
+      "namaPaket": "1 Sesi",
+      "kategori": "college",
+      "harga": 75000,
+      "jumlahSesi": 1,
+      "durasi": "1 Bulan",
+      "deskripsi": "Hanya Pendampingan 1 Sesi",
+      "benefit": [
+        "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT003",
+      "namaPaket": "Umum Session Only",
+      "kategori": "regular",
+      "harga": 350000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Sesi latihan fleksibel, simpel, hemat tanpa komitmen program",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT004",
+      "namaPaket": "Umum Session Only",
+      "kategori": "regular",
+      "harga": 650000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Sesi latihan fleksibel, simpel, hemat tanpa komitmen program",
+      "benefit": [
+        "Pendampingan latihan",
+        "Koreksi teknik",
+        "Penjelasan gerakan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT008",
+      "namaPaket": "Umum Paket Pelatihan Core",
+      "kategori": "regular",
+      "harga": 500000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT009",
+      "namaPaket": "Umum Paket Pelatihan Core",
+      "kategori": "regular",
+      "harga": 900000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT010",
+      "namaPaket": "Umum Paket Pelatihan Core",
+      "kategori": "regular",
+      "harga": 1200000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "Program latihan terstruktur dengan pendampingan langsung",
+      "benefit": [
+        "Program terstruktur",
+        "Pendampingan latihan",
+        "Tracking progres & beban",
+        "Evaluasi tubuh dasar"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT_1SR",
+      "namaPaket": "1 Sesi",
+      "kategori": "regular",
+      "harga": 75000,
+      "jumlahSesi": 1,
+      "durasi": "1 Bulan",
+      "deskripsi": "Hanya Pendampingan 1 Sesi",
+      "benefit": [
+        "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT011",
+      "namaPaket": "Mahasiswa Pelatihan Penuh Premium",
+      "kategori": "premium",
+      "harga": 900000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "All-in coaching dengan pendampingan prioritas",
+      "benefit": [
+        "Semua fitur Core",
+        "Pendampingan prioritas",
+        "Dukungan WhatsApp/Video",
+        "Penyesuaian progres lebih cepat"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT012",
+      "namaPaket": "Mahasiswa Pelatihan Penuh Premium",
+      "kategori": "premium",
+      "harga": 1200000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "All-in coaching dengan pendampingan prioritas",
+      "benefit": [
+        "Semua fitur Core",
+        "Pendampingan prioritas",
+        "Dukungan WhatsApp/Video",
+        "Penyesuaian progres lebih cepat"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT013",
+      "namaPaket": "Umum Pelatihan Penuh Premium",
+      "kategori": "premium",
+      "harga": 1100000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "All-in coaching dengan pendampingan prioritas",
+      "benefit": [
+        "Semua fitur Core",
+        "Pendampingan prioritas",
+        "Dukungan WhatsApp/Video",
+        "Penyesuaian progres lebih cepat"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT014",
+      "namaPaket": "Umum Pelatihan Penuh Premium",
+      "kategori": "premium",
+      "harga": 1500000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "All-in coaching dengan pendampingan prioritas",
+      "benefit": [
+        "Semua fitur Core",
+        "Pendampingan prioritas",
+        "Dukungan WhatsApp/Video",
+        "Penyesuaian progres lebih cepat"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PT_1SP",
+      "namaPaket": "1 Sesi",
+      "kategori": "premium",
+      "harga": 75000,
+      "jumlahSesi": 1,
+      "durasi": "1 Bulan",
+      "deskripsi": "Hanya Pendampingan 1 Sesi",
+      "benefit": [
+        "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    }
+  ]
 }

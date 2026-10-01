@@ -8,6 +8,41 @@
 - [Harga](https://xnkbooking.my.id/harga/): daftar paket dan harga (Rupiah)
 - [Booking klien](https://book.xnkbooking.my.id/): login dengan nomor WhatsApp dan booking sesi
 
+## Paket
+
+### Student
+
+- Student Basic: Rp 250.000, 4 sesi, 1 Bulan
+- Student Plus: Rp 450.000, 8 sesi, 1 Bulan
+- Student Pro: Rp 500.000, 12 sesi, 1 Bulan
+- 1 Sesi: Rp 75.000, 1 sesi, 1 Bulan
+
+### College
+
+- Mahasiswa Session Only: Rp 250.000, 4 sesi, 1 Bulan
+- Mahasiswa Session Only: Rp 450.000, 8 sesi, 1 Bulan
+- Mahasiswa Paket Pelatihan Core: Rp 400.000, 4 sesi, 1 Bulan
+- Mahasiswa Paket Pelatihan Core: Rp 700.000, 8 sesi, 1 Bulan
+- Mahasiswa Paket Pelatihan Core: Rp 900.000, 12 sesi, 1 Bulan
+- 1 Sesi: Rp 75.000, 1 sesi, 1 Bulan
+
+### Regular
+
+- Umum Session Only: Rp 350.000, 4 sesi, 1 Bulan
+- Umum Session Only: Rp 650.000, 8 sesi, 1 Bulan
+- Umum Paket Pelatihan Core: Rp 500.000, 4 sesi, 1 Bulan
+- Umum Paket Pelatihan Core: Rp 900.000, 8 sesi, 1 Bulan
+- Umum Paket Pelatihan Core: Rp 1.200.000, 12 sesi, 1 Bulan
+- 1 Sesi: Rp 75.000, 1 sesi, 1 Bulan
+
+### Premium
+
+- Mahasiswa Pelatihan Penuh Premium: Rp 900.000, 8 sesi, 1 Bulan
+- Mahasiswa Pelatihan Penuh Premium: Rp 1.200.000, 12 sesi, 1 Bulan
+- Umum Pelatihan Penuh Premium: Rp 1.100.000, 8 sesi, 1 Bulan
+- Umum Pelatihan Penuh Premium: Rp 1.500.000, 12 sesi, 1 Bulan
+- 1 Sesi: Rp 75.000, 1 sesi, 1 Bulan
+
 ## Kontak
 
 - WhatsApp: +6288221254305

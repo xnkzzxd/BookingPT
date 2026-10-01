@@ -1,0 +1,10 @@
+{
+  "updatedAt": null,
+  "categories": [
+    { "id": "student", "label": "Student" },
+    { "id": "college", "label": "College" },
+    { "id": "regular", "label": "Regular" },
+    { "id": "premium", "label": "Premium" }
+  ],
+  "packages": []
+}

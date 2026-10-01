@@ -83,7 +83,7 @@ ul, ol { padding: 0; list-style: none; }
 .logo { display: inline-flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; text-decoration: none; }
 .logo-word { font-family: var(--display); font-size: 24px; letter-spacing: .06em; line-height: 1; }
 .logo-mark { width: 36px; height: 36px; border-radius: 11px; background: var(--ink); display: grid; place-items: center; flex: none; }
-.logo-mark svg { width: 18px; height: 18px; }
+.logo-mark svg { width: 20px; height: 20px; }
 .logo-mark-light { background: #fff; }
 
 /* ---------- Nav ---------- */
@@ -117,7 +117,7 @@ ul, ol { padding: 0; list-style: none; }
 .menu-open { overflow: hidden; }
 .menu-open .logo-word { color: #fff; transition: color .3s .2s; }
 .menu-open .logo-mark { background: #fff; }
-.menu-open .logo-mark svg { stroke: var(--ink); }
+.menu-open .logo-mark svg { fill: var(--ink); }
 .menu-open .burger { background: #fff; }
 .menu-open .burger span { background: var(--ink); }
 .m-menu-links { display: grid; gap: 4px; }
@@ -265,7 +265,7 @@ ul, ol { padding: 0; list-style: none; }
   .price { flex: none; width: 82vw; max-width: 380px; scroll-snap-align: center; min-height: 420px; }
   .faq-grid { grid-template-columns: 1fr; gap: 12px; }
   .faq-a { padding-right: 0; }
-  .m-menu-links a { font-size: clamp(40px, 11vw, 64px); }
+  .m-menu-links a { font-size: clamp(30px, 8.6vw, 56px); overflow-wrap: anywhere; }
   .step { grid-template-columns: 44px 1fr; padding: 16px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }

@@ -105,7 +105,23 @@ function breadcrumbLd(label, url) {
 
 // ── pages ────────────────────────────────────────────────────────────────────
 
+const LOGO_MARK = '<span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span>';
+const ARROW = '<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+function navItems(o) {
+  const items = [['/', 'Beranda', ''], ['/harga/', 'Harga', 'harga']];
+  if (o.showKelas) items.push(['/kelas/', 'Kelas', 'kelas']);
+  items.push(['/harga/#faq', 'FAQ', '']);
+  return items;
+}
+
+// Same look as the landing (LandingStyle.html in the XNK repo): fixed nav, full-screen black menu on phones, black footer.
 function page(o) {
+  const items = navItems(o);
+  const links = items.map(i => '<a class="nav-link"' + (o.current && o.current === i[2] ? ' aria-current="page"' : '') + ' href="' + i[0] + '">' + i[1] + '</a>').join('');
+  const mlinks = items.map((i, n) => '<a href="' + i[0] + '"><small>0' + (n + 1) + '</small>' + i[1] + '</a>').join('');
+  const wa = waLink('Halo Coach Jizdan, saya mau tanya program personal training.');
   return '<!DOCTYPE html>\n<html lang="id">\n<head>\n<meta charset="UTF-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' +
     '<title>' + esc(o.title) + '</title>\n' +
@@ -118,38 +134,64 @@ function page(o) {
     '<meta property="og:description" content="' + esc(o.description) + '">\n<meta property="og:image" content="' + BASE + '/img/og.jpg">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
     '<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">\n' +
     '<link rel="stylesheet" href="/site.css">\n' +
     o.ld.map(ld).join('\n') + '\n</head>\n<body>\n' +
-    '<header class="top"><a class="brand" href="/">' + NAME + '</a><nav aria-label="Menu"><a href="/">Beranda</a><a href="/harga/"' + (o.current === 'harga' ? ' aria-current="page"' : '') + '>Harga</a>' +
-    (o.showKelas ? '<a href="/kelas/"' + (o.current === 'kelas' ? ' aria-current="page"' : '') + '>Kelas</a>' : '') + '</nav></header>\n' +
+    '<header class="nav" id="nav"><a class="logo" href="/" aria-label="XNK, beranda">' + LOGO_MARK + '<span class="logo-word">XNK</span></a>' +
+    '<nav class="nav-links" aria-label="Menu">' + links + '</nav>' +
+    '<a class="btn btn-dark btn-sm nav-cta" href="' + BOOK_URL + '">Sudah member?' + ARROW + '</a>' +
+    '<button type="button" class="burger" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="m-menu"><span></span><span></span></button></header>\n' +
+    '<div class="m-menu" id="m-menu" aria-hidden="true"><nav class="m-menu-links" aria-label="Menu">' + mlinks + '</nav>' +
+    '<div class="m-menu-foot"><a class="btn btn-light btn-block" href="' + BOOK_URL + '">Mulai Sekarang</a><a class="m-menu-wa" href="' + wa + '" rel="noopener">Chat WhatsApp →</a></div></div>\n' +
     '<main>\n' + o.body + '\n</main>\n' +
-    '<footer class="foot"><p>' + NAME + ' · ' + COACH + ' · ' + AREAS.join(' &amp; ') + '</p>' +
-    '<p><a href="' + BOOK_URL + '">Booking &amp; login klien</a> · <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">WhatsApp</a></p></footer>\n' +
+    '<footer class="footer"><div class="wrap footer-grid">' +
+    '<div class="footer-brand"><span class="logo"><span class="logo-mark logo-mark-light"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span><span class="logo-word">XNK</span></span>' +
+    '<p>Personal training berbasis sport science bersama ' + COACH + ' di ' + AREAS.join(' &amp; ') + '.</p></div>' +
+    '<div class="footer-col"><p class="footer-h">Menu</p>' + items.map(i => '<a href="' + i[0] + '">' + i[1] + '</a>').join('') + '</div>' +
+    '<div class="footer-col"><p class="footer-h">Kontak</p><a href="' + BOOK_URL + '">Booking &amp; login klien</a><a href="' + wa + '" rel="noopener">WhatsApp</a></div></div>' +
+    '<div class="footer-giant" aria-hidden="true">XNK</div><p class="wrap footer-copy">&copy; 2026 XNK Personal Training. All rights reserved.</p></footer>\n' +
+    '<script>(function(){var b=document.getElementById("burger"),n=document.getElementById("nav"),m=document.getElementById("m-menu");' +
+    'function t(o){document.body.classList.toggle("menu-open",o);b.setAttribute("aria-expanded",o);m.setAttribute("aria-hidden",!o);}' +
+    'b.addEventListener("click",function(){t(!document.body.classList.contains("menu-open"));});' +
+    'm.addEventListener("click",function(e){if(e.target.closest("a"))t(false);});' +
+    'function s(){n.classList.toggle("scrolled",window.pageYOffset>20);}window.addEventListener("scroll",s,{passive:true});s();' +
+    'var seg=document.querySelector(".seg");if(seg)seg.addEventListener("click",function(e){var a=e.target.closest(".toggle-btn");if(!a)return;[].forEach.call(seg.children,function(x){x.classList.toggle("active",x===a);});});' +
+    'document.addEventListener("pointermove",function(e){var c=e.target.closest&&e.target.closest(".price");if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty("--mx",(e.clientX-r.left)+"px");c.style.setProperty("--my",(e.clientY-r.top)+"px");});' +
+    '})();</script>\n' +
     '</body>\n</html>\n';
 }
 
-function priceCard(p) {
-  const per = p.jumlahSesi && Number(p.harga) ? '<p class="per">≈ ' + rupiah(Number(p.harga) / p.jumlahSesi) + ' / sesi</p>' : '';
-  const ben = (p.benefit || []).filter(Boolean).map(b => '<li>' + esc(b) + '</li>').join('');
+function priceCard(p, featured) {
+  const per = p.jumlahSesi && Number(p.harga) ? '<p class="price-per">≈ ' + rupiah(Number(p.harga) / p.jumlahSesi) + ' / sesi</p>' : '';
+  const ben = (p.benefit || []).filter(Boolean).slice(0, 4).map(b => '<li>' + CHECK + '<span>' + esc(b) + '</span></li>').join('');
   const meta = (p.jumlahSesi ? p.jumlahSesi + ' sesi' : 'Unlimited') + (p.durasi ? ' · ' + esc(p.durasi) : '');
-  return '<article class="card" id="' + esc(p.id) + '"><h3>' + esc(p.namaPaket) + '</h3><p class="meta">' + meta + '</p>' +
-    '<p class="amt">' + rupiah(p.harga) + '</p>' + per +
-    (p.deskripsi ? '<p>' + esc(p.deskripsi) + '</p>' : '') + (ben ? '<ul>' + ben + '</ul>' : '') +
-    '<a class="btn" href="' + waLink('Halo Coach Jizdan, saya tertarik paket ' + p.namaPaket + '.') + '" rel="noopener">Tanya paket ini</a></article>';
+  return '<article class="price' + (featured ? ' featured' : '') + '" id="' + esc(p.id) + '">' + (featured ? '<span class="price-badge">Rekomendasi</span>' : '') +
+    '<h3 class="price-name">' + esc(p.namaPaket) + '</h3><p class="price-meta">' + meta + '</p>' +
+    '<p class="price-amt"><small>Rp</small> ' + esc(Math.round(Number(p.harga) || 0).toLocaleString('id-ID')) + '</p>' + per +
+    (p.deskripsi ? '<p class="price-desc">' + esc(p.deskripsi) + '</p>' : '') + (ben ? '<ul class="price-list">' + ben + '</ul>' : '<div class="price-gap"></div>') +
+    '<a class="btn ' + (featured ? 'btn-light' : 'btn-dark') + '" href="' + waLink('Halo Coach Jizdan, saya tertarik paket ' + p.namaPaket + '.') + '" rel="noopener">Tanya paket ini' + ARROW + '</a></article>';
 }
 
 function buildHarga(paket, kelas) {
   const has = paket.packages.length > 0;
   const low = has ? Math.min.apply(null, paket.packages.map(p => Number(p.harga))) : 0;
+  const cats = has ? paket.groups.map(g => {
+    const mid = g.packages.length > 1 ? Math.floor((g.packages.length - 1) / 2) : -1;
+    return '<div class="cat" id="kategori-' + esc(g.id) + '"><h2 class="cat-h">' + esc(g.label) + '</h2><div class="price-track">' +
+      g.packages.map((p, i) => priceCard(p, i === mid)).join('') + '</div></div>';
+  }).join('') : '<p class="lead">Daftar harga sedang diperbarui. Hubungi kami lewat WhatsApp untuk info paket terbaru.</p>';
+  const seg = has && paket.groups.length > 1 ? '<div class="seg" role="navigation" aria-label="Kategori paket">' +
+    paket.groups.map((g, i) => '<a class="toggle-btn' + (i === 0 ? ' active' : '') + '" href="#kategori-' + esc(g.id) + '">' + esc(g.label) + '</a>').join('') + '</div>' : '';
   const body =
-    '<section class="hero"><p class="eyebrow">Harga &amp; Paket</p><h1>Harga Personal Training di Banjarnegara &amp; Purwokerto</h1>' +
-    '<p class="lead">Pilih paket sesuai kebutuhanmu. Semua paket termasuk sesi 1-on-1 dengan ' + COACH + ', program personal berbasis sport science, dan 1 sesi trial gratis untuk calon klien baru.' +
-    (has ? ' Mulai dari ' + rupiah(low) + '.' : '') + '</p>' +
-    '<p><a class="btn dark" href="' + BOOK_URL + '">Mulai Sekarang</a> <a class="btn" href="' + waLink('Halo Coach Jizdan, saya mau konsultasi paket personal training.') + '" rel="noopener">Konsultasi gratis</a></p></section>' +
-    (has ? paket.groups.map(g => '<section class="group" id="kategori-' + esc(g.id) + '"><h2>' + esc(g.label) + '</h2><div class="grid">' + g.packages.map(priceCard).join('') + '</div></section>').join('')
-         : '<section class="group"><p class="lead">Daftar harga sedang diperbarui. Hubungi kami lewat WhatsApp untuk info paket terbaru.</p></section>') +
-    '<section class="group"><h2>Pertanyaan umum</h2>' + FAQ.map(([q, a]) => '<details><summary>' + esc(q) + '</summary><p>' + esc(a) + '</p></details>').join('') + '</section>' +
-    (paket.updatedAt ? '<p class="note">Harga diperbarui ' + esc(String(paket.updatedAt).slice(0, 10)) + '.</p>' : '');
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Harga &amp; Paket</p>' +
+    '<h1 class="h2">Investasi untuk dirimu</h1>' +
+    '<p class="lead">Harga personal training di Banjarnegara &amp; Purwokerto. Semua paket termasuk sesi 1-on-1 dengan ' + COACH + ', program personal berbasis sport science, dan 1 sesi trial gratis untuk calon klien baru.' + (has ? ' Mulai dari ' + rupiah(low) + '.' : '') + '</p>' +
+    '<div class="hero-actions"><a class="btn btn-dark" href="' + BOOK_URL + '">Mulai Sekarang' + ARROW + '</a><a class="btn btn-line" href="' + waLink('Halo Coach Jizdan, saya mau konsultasi paket personal training.') + '" rel="noopener">Konsultasi gratis</a></div></div></section>' +
+    '<section class="sec sec-paket" id="paket"><div class="wrap"><div class="sec-head-row"><div><p class="eyebrow">Pilih Paket</p><h2 class="h2">Paket &amp; harga</h2></div>' + seg + '</div>' + cats +
+    (paket.updatedAt ? '<p class="note">Harga diperbarui ' + esc(String(paket.updatedAt).slice(0, 10)) + '.</p>' : '') + '</div></section>' +
+    '<section class="sec sec-faq" id="faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan Umum</p><h2 class="h2">FAQ</h2><p class="lead">Belum terjawab? Tanya langsung ke coach lewat WhatsApp.</p></div>' +
+    '<div class="faq-list">' + FAQ.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>';
   return page({
     title: 'Harga Personal Training Banjarnegara & Purwokerto · ' + NAME,
     description: 'Daftar harga paket personal training ' + COACH + ' di Banjarnegara & Purwokerto' + (has ? ', mulai ' + rupiah(low) : '') + '. Termasuk 1 sesi trial gratis.',
@@ -160,18 +202,19 @@ function buildHarga(paket, kelas) {
 
 function kelasCard(k) {
   const rows = [['Jadwal', k.jadwal], ['Durasi', k.durasi], ['Level', k.level], ['Lokasi', k.lokasi], ['Kapasitas', k.kapasitas ? k.kapasitas + ' peserta' : '']]
-    .filter(r => r[1]).map(r => '<li><b>' + r[0] + ':</b> ' + esc(r[1]) + '</li>').join('');
-  return '<article class="card" id="' + esc(k.id || '') + '"><h3>' + esc(k.nama) + '</h3>' + (k.deskripsi ? '<p>' + esc(k.deskripsi) + '</p>' : '') +
-    (rows ? '<ul>' + rows + '</ul>' : '') + (Number(k.harga) > 0 ? '<p class="amt">' + rupiah(k.harga) + '</p>' : '') +
-    '<a class="btn" href="' + waLink('Halo Coach Jizdan, saya tertarik kelas ' + k.nama + '.') + '" rel="noopener">Tanya kelas ini</a></article>';
+    .filter(r => r[1]).map(r => '<li>' + CHECK + '<span><b>' + r[0] + ':</b> ' + esc(r[1]) + '</span></li>').join('');
+  return '<article class="price" id="' + esc(k.id || '') + '"><h3 class="price-name">' + esc(k.nama) + '</h3>' +
+    (Number(k.harga) > 0 ? '<p class="price-amt"><small>Rp</small> ' + esc(Math.round(Number(k.harga)).toLocaleString('id-ID')) + '</p>' : '') +
+    (k.deskripsi ? '<p class="price-desc">' + esc(k.deskripsi) + '</p>' : '') + (rows ? '<ul class="price-list">' + rows + '</ul>' : '<div class="price-gap"></div>') +
+    '<a class="btn btn-dark" href="' + waLink('Halo Coach Jizdan, saya tertarik kelas ' + k.nama + '.') + '" rel="noopener">Tanya kelas ini' + ARROW + '</a></article>';
 }
 
 function buildKelas(paket, kelas) {
   const has = kelas.length > 0;
   const body =
-    '<section class="hero"><p class="eyebrow">Kelas</p><h1>Kelas Latihan ' + COACH + '</h1>' +
-    '<p class="lead">' + (has ? 'Jadwal dan harga kelas yang sedang dibuka.' : 'Kelas baru akan segera dibuka. Hubungi kami lewat WhatsApp untuk kabar terbaru.') + '</p></section>' +
-    (has ? '<section class="group"><div class="grid">' + kelas.map(kelasCard).join('') + '</div></section>' : '');
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Kelas</p><h1 class="h2">Kelas latihan</h1>' +
+    '<p class="lead">' + (has ? 'Jadwal dan harga kelas ' + COACH + ' yang sedang dibuka.' : 'Kelas baru akan segera dibuka. Hubungi kami lewat WhatsApp untuk kabar terbaru.') + '</p></div></section>' +
+    (has ? '<section class="sec sec-paket"><div class="wrap"><div class="price-track">' + kelas.map(kelasCard).join('') + '</div></div></section>' : '');
   const ldList = has ? [{
     '@context': 'https://schema.org', '@type': 'ItemList', name: 'Kelas ' + NAME,
     itemListElement: kelas.map((k, i) => ({

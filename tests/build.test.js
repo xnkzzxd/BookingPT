@@ -21,9 +21,9 @@ const jsonLd = html => [...html.matchAll(/<script type="application\/ld\+json">(
 test('harga page: real HTML text for every active package, grouped in category order, inactive hidden', () => {
   const out = build({ index: INDEX, paket: PAKET, kelas: [] });
   const h = out['harga/index.html'];
-  assert.ok(h.includes('Rp 800.000') && h.includes('Rp 1.500.000'));
+  assert.ok(h.includes('Rp</small> 800.000') && h.includes('Rp</small> 1.500.000'));
   assert.ok(h.includes('≈ Rp 100.000 / sesi'));
-  assert.ok(!h.includes('Lama') && !h.includes('Rp 100.000</p>'));
+  assert.ok(!h.includes('Lama') && !h.includes('Rp</small> 100.000'));
   assert.ok(h.indexOf('Regular') < h.indexOf('Premium'));
   assert.ok(!h.includes('Student</h2>'), 'empty category not shown');
   assert.ok(h.includes('Program &lt;intensif&gt; &amp; aman'), 'HTML-escaped');
@@ -88,4 +88,18 @@ test('sync: keeps public fields only, keeps updatedAt when nothing changed, refu
   assert.equal(first.updatedAt, '2026-10-01T00:00:00Z');
   assert.equal(merge(first, fresh, '2026-12-01T00:00:00Z').updatedAt, '2026-10-01T00:00:00Z');
   assert.throws(() => merge(first, { categories: [], packages: [] }, 'x'), /dipertahankan/);
+});
+
+test('theme: landing fonts, fixed nav with burger menu, black footer, one featured card per multi-package category', () => {
+  const h = build({ index: INDEX, paket: PAKET, kelas: [] })['harga/index.html'];
+  assert.ok(h.includes('family=Anton') && h.includes('family=Inter'));
+  assert.ok(h.includes('class="nav" id="nav"') && h.includes('id="burger"') && h.includes('id="m-menu"'));
+  assert.ok(h.includes('class="footer"') && h.includes('footer-giant'));
+  assert.equal((h.match(/class="price featured"/g) || []).length, 0, 'one package per category: nothing featured');
+  const three = JSON.parse(JSON.stringify(PAKET));
+  three.packages.push({ id: 'P4', namaPaket: 'Regular 12', kategori: 'regular', harga: 1200000, jumlahSesi: 12, aktif: true }, { id: 'P5', namaPaket: 'Regular 4', kategori: 'regular', harga: 400000, jumlahSesi: 4, aktif: true });
+  const h3 = build({ index: INDEX, paket: three, kelas: [] })['harga/index.html'];
+  assert.equal((h3.match(/class="price featured"/g) || []).length, 1);
+  assert.ok(/<article class="price featured" id="P4">/.test(h3), 'the middle card (of 3) is featured');
+  for (const m of h3.matchAll(/href="#(kategori-[a-z]+)"/g)) assert.ok(h3.includes('id="' + m[1] + '"'), m[1]);
 });

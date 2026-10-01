@@ -205,6 +205,33 @@ ul, ol { padding: 0; list-style: none; }
 .footer-giant { font-family: var(--display); font-size: 36vw; line-height: .78; text-align: center; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .22); margin: 10px 0 18px; user-select: none; }
 .footer-copy { font-size: 13px; color: rgba(255, 255, 255, .45); }
 
+/* ---------- Halaman kata kunci (kota, online) ---------- */
+.h2-sm { font-size: clamp(30px, 3.6vw, 48px); max-width: 30ch; }
+.sec-paket + .sec-paket { padding-top: 0; }
+.sec-paket { padding-bottom: clamp(40px, 5vw, 72px); }
+.sec-hero + .sec-paket { padding-top: clamp(24px, 4vw, 48px); }
+.prog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 8px; }
+.prog { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; }
+.prog h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.prog p { color: var(--ink-2); font-size: 15px; }
+.prog a, .lead a, .faq-a a { text-decoration: underline; text-underline-offset: 3px; }
+.steps { display: grid; gap: 14px; margin-top: 8px; counter-reset: s; max-width: 860px; }
+.step { display: grid; grid-template-columns: 56px 1fr; gap: 14px; padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); }
+.step-no { font-family: var(--display); font-size: 34px; line-height: 1; }
+.step h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.step p { color: var(--ink-2); font-size: 15px; }
+.sec-paket .price-list { margin: 8px 0 0; max-width: 760px; font-size: 16px; }
+.links-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.links-row a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--ink); font-weight: 700; font-size: 14px; text-decoration: none; }
+.links-row a:hover { background: var(--ink); color: #fff; }
+.sec-cta { background: var(--ink); color: #fff; padding: clamp(72px, 9vw, 120px) 0; }
+.sec-cta .h2 { margin-top: 0; max-width: 18ch; }
+.btn-ghost { border-color: rgba(255, 255, 255, .5); color: #fff; background: transparent; }
+.btn-ghost:hover { background: #fff; color: var(--ink); }
+.menu-open .m-menu-links a:nth-child(5) { transition-delay: .49s; }
+.menu-open .m-menu-links a:nth-child(6) { transition-delay: .55s; }
+.menu-open .m-menu-links a:nth-child(7) { transition-delay: .61s; }
+
 /* ---------- HP (< 1024px): alur biasa + geser horizontal, seperti landing ---------- */
 @media (max-width: 1023.98px) {
   .nav { padding: 16px; }
@@ -225,6 +252,8 @@ ul, ol { padding: 0; list-style: none; }
   .price { flex: none; width: 82vw; max-width: 380px; scroll-snap-align: center; min-height: 420px; }
   .faq-grid { grid-template-columns: 1fr; gap: 12px; }
   .faq-a { padding-right: 0; }
+  .m-menu-links a { font-size: clamp(40px, 11vw, 64px); }
+  .step { grid-template-columns: 44px 1fr; padding: 16px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
 }

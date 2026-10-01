@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE } = require('./seo-content.js');
 
 const ROOT = path.join(__dirname, '..');
 const BASE = 'https://xnkbooking.my.id';
@@ -24,6 +25,7 @@ const FAQ = [
   ['Bisa ganti jadwal di hari yang sama?', 'Bisa! Kami mengerti ada keadaan darurat. Cukup hubungi coach via WhatsApp minimal 2 jam sebelum sesi untuk reschedule tanpa penalti.'],
   ['Apakah ada sesi trial?', 'Ada! Kami menyediakan 1 sesi trial gratis untuk kamu yang ingin merasakan latihan bersama coach sebelum memutuskan. Klik "Mulai Sekarang" untuk menjadwalkan trial.']
 ];
+const INSTAGRAM = 'https://www.instagram.com/jiz.dan/';
 const PROGRAMS = ['Fat Loss', 'Muscle Building', 'Strength & Conditioning', 'Sports Performance'];
 
 const SEO_HEAD = ['<!--SEO:START-->', '<!--SEO:END-->'];
@@ -66,16 +68,42 @@ function offerOf(p) {
   return o;
 }
 
-function businessLd(paket, kelas) {
+function cleanLokasi(raw) {
+  const out = {};
+  Object.keys(CITIES).forEach(k => {
+    const l = (raw && raw[k]) || {};
+    out[k] = { nama: String(l.nama || '').trim(), alamat: String(l.alamat || '').trim(), kodePos: String(l.kodePos || '').trim(), maps: String(l.maps || '').trim(),
+      lat: Number.isFinite(Number(l.lat)) && l.lat !== null && l.lat !== '' ? Number(l.lat) : null, lng: Number.isFinite(Number(l.lng)) && l.lng !== null && l.lng !== '' ? Number(l.lng) : null };
+  });
+  return out;
+}
+// A real address means a Place; without one the city is only a service area (never an invented address).
+function placeLd(key, l) {
+  if (!l || !l.alamat) return null;
+  const place = {
+    '@type': 'Place', name: l.nama || (NAME + ' ' + CITIES[key].nama),
+    address: Object.assign({ '@type': 'PostalAddress', streetAddress: l.alamat, addressLocality: CITIES[key].nama, addressRegion: 'Jawa Tengah', addressCountry: 'ID' }, l.kodePos ? { postalCode: l.kodePos } : {})
+  };
+  if (l.lat !== null && l.lng !== null) place.geo = { '@type': 'GeoCoordinates', latitude: l.lat, longitude: l.lng };
+  if (l.maps) place.hasMap = l.maps;
+  return place;
+}
+
+let LOKASI = {};   // set by build(); keeps businessLd callers simple
+function businessLd(paket, kelas, lokasi) {
+  lokasi = lokasi || LOKASI;
   const biz = {
     '@context': 'https://schema.org', '@type': 'ProfessionalService', '@id': BASE + '/#business',
     name: NAME, alternateName: COACH + ' · Personal Trainer', url: BASE + '/',
     image: BASE + '/img/og.jpg', logo: BASE + '/icon-192.png', telephone: '+' + WA_NUMBER,
     description: 'Personal trainer berbasis sport science di Banjarnegara & Purwokerto: fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.',
     areaServed: AREAS.map(a => ({ '@type': 'City', name: a })), inLanguage: 'id', priceRange: 'Rp',
-    founder: { '@type': 'Person', '@id': BASE + '/#coach', name: COACH, jobTitle: 'Personal Trainer', knowsAbout: PROGRAMS },
-    makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } }))
+    founder: { '@type': 'Person', '@id': BASE + '/#coach', name: COACH, jobTitle: 'Personal Trainer', knowsAbout: PROGRAMS, sameAs: [INSTAGRAM] },
+    makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
+    sameAs: [INSTAGRAM], knowsLanguage: 'id'
   };
+  const places = Object.keys(CITIES).map(k => placeLd(k, lokasi && lokasi[k])).filter(Boolean);
+  if (places.length) biz.location = places;
   if (paket.packages.length) {
     biz.hasOfferCatalog = {
       '@type': 'OfferCatalog', name: 'Paket Personal Training', url: BASE + '/harga/',
@@ -111,6 +139,8 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 function navItems(o) {
   const items = [['/', 'Beranda', ''], ['/harga/', 'Harga', 'harga']];
+  Object.keys(CITIES).forEach(k => items.push(['/' + CITIES[k].slug + '/', CITIES[k].nama, k]));
+  items.push(['/' + ONLINE.slug + '/', 'Online', 'online']);
   if (o.showKelas) items.push(['/kelas/', 'Kelas', 'kelas']);
   items.push(['/harga/#faq', 'FAQ', '']);
   return items;
@@ -232,6 +262,95 @@ function buildKelas(paket, kelas) {
   });
 }
 
+
+// ── keyword pages: /personal-trainer-<kota>/ and /personal-trainer-online/ ───────
+
+function lowPrice(paket) {
+  return paket.packages.length ? rupiah(Math.min.apply(null, paket.packages.map(p => Number(p.harga)))) : '';
+}
+function faqHtml(items, ctx) {
+  return items.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a(ctx)) + '</p></details>').join('');
+}
+function faqLdOf(items, ctx) {
+  return { '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a(ctx) } })) };
+}
+function serviceLd(name, url, cities, paket) {
+  const svc = { '@context': 'https://schema.org', '@type': 'Service', '@id': url + '#service', name: name, serviceType: 'Personal training', url: url,
+    provider: { '@id': BASE + '/#business' }, areaServed: cities.map(c => ({ '@type': 'City', name: c })), inLanguage: 'id' };
+  if (paket.packages.length) {
+    const prices = paket.packages.map(p => Number(p.harga));
+    svc.offers = { '@type': 'AggregateOffer', priceCurrency: 'IDR', lowPrice: String(Math.min.apply(null, prices)), highPrice: String(Math.max.apply(null, prices)), offerCount: String(prices.length), url: BASE + '/harga/' };
+  }
+  return svc;
+}
+function programList() {
+  return '<div class="prog-grid">' + PROGRAMS.map(n => '<div class="prog"><h3>' + esc(n) + '</h3><p>' + esc(PROGRAM_TEXT[n] || '') + '</p></div>').join('') + '</div>';
+}
+function stepList(steps) {
+  return '<ol class="steps">' + steps.map((st, i) => '<li class="step"><span class="step-no">0' + (i + 1) + '</span><div><h3>' + esc(st[0]) + '</h3><p>' + esc(st[1]) + '</p></div></li>').join('') + '</ol>';
+}
+function checkList(items) {
+  return '<ul class="price-list">' + items.map(t => '<li>' + CHECK + '<span>' + esc(t) + '</span></li>').join('') + '</ul>';
+}
+function ctaBand(text) {
+  return '<section class="sec sec-cta"><div class="wrap"><h2 class="h2">' + text + '</h2><div class="hero-actions"><a class="btn btn-light" href="' + BOOK_URL + '">Booking trial gratis' + ARROW + '</a>' +
+    '<a class="btn btn-ghost" href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>';
+}
+function otherLinks(currentKey) {
+  const links = Object.keys(CITIES).filter(k => k !== currentKey).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>');
+  if (currentKey !== 'online') links.push('<a href="/' + ONLINE.slug + '/">Personal trainer online</a>');
+  links.push('<a href="/harga/">Harga &amp; paket</a>');
+  return '<p class="links-row">' + links.join('') + '</p>';
+}
+
+function buildCity(key, paket, kelas) {
+  const c = CITIES[key], l = LOKASI[key] || {};
+  const url = BASE + '/' + c.slug + '/';
+  const ctx = { low: lowPrice(paket) };
+  const place = l.alamat ? '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lokasi latihan</p><h2 class="h2">Latihan di ' + esc(c.nama) + '</h2><p class="lead">' +
+    (l.nama ? '<b>' + esc(l.nama) + '</b><br>' : '') + esc(l.alamat) + (l.kodePos ? ' ' + esc(l.kodePos) : '') + '</p>' +
+    (l.maps ? '<div class="hero-actions"><a class="btn btn-line" href="' + esc(l.maps) + '" rel="noopener">Buka di Google Maps' + ARROW + '</a></div>' : '') + '</div></section>' : '';
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">' + esc(c.nama) + ' · Jawa Tengah</p><h1 class="h2">' + esc(c.h1) + '</h1>' +
+    '<p class="lead">' + esc(c.lead) + '</p>' +
+    '<div class="hero-actions"><a class="btn btn-dark" href="' + BOOK_URL + '">Booking trial gratis' + ARROW + '</a><a class="btn btn-line" href="' + waLink('Halo Coach Jizdan, saya mau tanya personal training di ' + c.nama + '.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Keunggulan</p><h2 class="h2 h2-sm">' + esc(c.whyTitle) + '</h2>' + checkList(WHY) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program personal training di ' + esc(c.nama) + '</h2>' + programList() + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
+    place +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Harga</p><h2 class="h2 h2-sm">Harga personal trainer ' + esc(c.nama) + '</h2>' +
+    '<p class="lead">' + (ctx.low ? 'Paket mulai dari ' + ctx.low + '. ' : '') + 'Ada paket pelajar, mahasiswa, umum, dan premium, dan harga tercantum jelas. <a href="/harga/">Lihat semua harga dan paket</a>.</p></div></section>' +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ ' + esc(c.nama) + '</h2></div><div class="faq-list">' + faqHtml(c.faq, ctx) + '</div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lihat juga</p>' + otherLinks(key) + '</div></section>' +
+    ctaBand('Mulai latihan di ' + esc(c.nama));
+  return page({
+    title: c.title, description: c.description, url: url, index: true, current: key, showKelas: kelas.length > 0, body: body,
+    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer ' + c.nama, url, [c.nama], paket), faqLdOf(c.faq, ctx), breadcrumbLd('Personal Trainer ' + c.nama, url)]
+  });
+}
+
+function buildOnline(paket, kelas) {
+  const url = BASE + '/' + ONLINE.slug + '/';
+  const ctx = { low: lowPrice(paket) };
+  const cityBlocks = Object.keys(CITIES).map(k => '<div class="prog"><h3>Personal trainer online ' + esc(CITIES[k].nama) + '</h3><p>Kamu di ' + esc(CITIES[k].nama) +
+    ' bisa berlatih online bersama Coach Jizdan tanpa harus datang langsung. Mau tatap muka? Lihat juga <a href="/' + CITIES[k].slug + '/">personal trainer ' + esc(CITIES[k].nama) + '</a>.</p></div>').join('');
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Online · Seluruh Indonesia</p><h1 class="h2">' + esc(ONLINE.h1) + '</h1><p class="lead">' + esc(ONLINE.lead) + '</p>' +
+    '<div class="hero-actions"><a class="btn btn-dark" href="' + waLink('Halo Coach Jizdan, saya tertarik personal training online.') + '" rel="noopener">Konsultasi online gratis' + ARROW + '</a><a class="btn btn-line" href="' + BOOK_URL + '">Booking trial</a></div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Untuk siapa</p><h2 class="h2 h2-sm">Cocok kalau kamu</h2>' + checkList(ONLINE.forWho) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Bagaimana latihan online berjalan</h2>' + stepList(ONLINE.how) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Kota</p><h2 class="h2 h2-sm">Online dari Purwokerto dan Banjarnegara</h2><div class="prog-grid">' + cityBlocks + '</div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program yang bisa dijalani online</h2>' + programList() + '</div></section>' +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ online</h2></div><div class="faq-list">' + faqHtml(ONLINE.faq, ctx) + '</div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lihat juga</p>' + otherLinks('online') + '</div></section>' +
+    ctaBand('Mulai latihan online');
+  return page({
+    title: ONLINE.title, description: ONLINE.description, url: url, index: true, current: 'online', showKelas: kelas.length > 0, body: body,
+    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer Online', url, ['Purwokerto', 'Banjarnegara', 'Indonesia'], paket), faqLdOf(ONLINE.faq, ctx), breadcrumbLd('Personal Trainer Online', url)]
+  });
+}
+
 // ── index.html (wrapper) ─────────────────────────────────────────────────────
 
 function between(html, markers, inner) {
@@ -250,6 +369,7 @@ function seoBody(paket, kelas) {
     '<h1>' + COACH + ' · Personal Trainer ' + AREAS.join(' &amp; ') + '</h1>' +
     '<p>Personal training berbasis sport science: ' + PROGRAMS.map(esc).join(', ') + '. 1 sesi trial gratis.</p>' +
     (li ? '<h2>Paket</h2><ul>' + li + '</ul>' : '') +
+    '<p>' + Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join(' · ') + ' · <a href="/' + ONLINE.slug + '/">Personal trainer online</a></p>' +
     '<p><a href="/harga/">Lihat semua harga</a>' + (kelas.length ? ' · <a href="/kelas/">Kelas</a>' : '') + ' · <a href="' + BOOK_URL + '">Booking</a> · <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '">WhatsApp</a></p>' +
     '</main></noscript>';
 }
@@ -265,6 +385,8 @@ function buildSitemap(paket, kelas) {
   const lm = paket.updatedAt ? '<lastmod>' + String(paket.updatedAt).slice(0, 10) + '</lastmod>' : '';
   const urls = [['/', '1.0'], ['/harga/', '0.9']];
   if (!paket.packages.length) urls.splice(1, 1);
+  Object.keys(CITIES).forEach(k => urls.push(['/' + CITIES[k].slug + '/', '0.9']));
+  urls.push(['/' + ONLINE.slug + '/', '0.8']);
   if (kelas.length) urls.push(['/kelas/', '0.7']);
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(u => '  <url><loc>' + BASE + u[0] + '</loc>' + lm + '<priority>' + u[1] + '</priority></url>').join('\n') + '\n</urlset>\n';
@@ -279,7 +401,8 @@ function buildLlms(paket, kelas) {
     '## Halaman', '',
     '- [Beranda](' + BASE + '/): profil coach, program, jadwal slot kosong, FAQ',
     '- [Harga](' + BASE + '/harga/): daftar paket dan harga (Rupiah)'
-  ];
+  ].concat(Object.keys(CITIES).map(k => '- [Personal Trainer ' + CITIES[k].nama + '](' + BASE + '/' + CITIES[k].slug + '/): layanan personal training tatap muka di ' + CITIES[k].nama))
+    .concat(['- [Personal Trainer Online](' + BASE + '/' + ONLINE.slug + '/): latihan online dari Purwokerto, Banjarnegara, atau kota lain']);
   if (kelas.length) lines.push('- [Kelas](' + BASE + '/kelas/): jadwal dan harga kelas');
   lines.push('- [Booking klien](' + BOOK_URL + '): login dengan nomor WhatsApp dan booking sesi', '');
   if (paket.packages.length) {
@@ -302,8 +425,9 @@ function buildLlms(paket, kelas) {
 // ── run ──────────────────────────────────────────────────────────────────────
 
 function build(files) {
+  LOKASI = cleanLokasi(files.lokasi);
   const paket = cleanPaket(files.paket), kelas = cleanKelas(files.kelas);
-  return {
+  const out = {
     'index.html': renderIndex(files.index, paket, kelas),
     'harga/index.html': buildHarga(paket, kelas),
     'kelas/index.html': buildKelas(paket, kelas),
@@ -311,11 +435,14 @@ function build(files) {
     'robots.txt': buildRobots(),
     'llms.txt': buildLlms(paket, kelas)
   };
+  Object.keys(CITIES).forEach(k => { out[CITIES[k].slug + '/index.html'] = buildCity(k, paket, kelas); });
+  out[ONLINE.slug + '/index.html'] = buildOnline(paket, kelas);
+  return out;
 }
 
 function main() {
   const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
-  const out = build({ index: read('index.html'), paket: JSON.parse(read('data/paket.json')), kelas: JSON.parse(read('data/kelas.json')) });
+  const out = build({ index: read('index.html'), paket: JSON.parse(read('data/paket.json')), kelas: JSON.parse(read('data/kelas.json')), lokasi: JSON.parse(read('data/lokasi.json')) });
   Object.keys(out).forEach(f => {
     const full = path.join(ROOT, f);
     fs.mkdirSync(path.dirname(full), { recursive: true });

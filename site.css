@@ -232,6 +232,15 @@ ul, ol { padding: 0; list-style: none; }
 .menu-open .m-menu-links a:nth-child(6) { transition-delay: .55s; }
 .menu-open .m-menu-links a:nth-child(7) { transition-delay: .61s; }
 
+/* ---------- Beranda: strip + teks di bawah landing ---------- */
+.more-strip { height: 48px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; }
+.more-strip a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-decoration: none; text-align: center; }
+.home-info { background: var(--bg); }
+.home-info .sec-hero { padding-top: clamp(64px, 8vw, 110px); }
+.prose { display: grid; gap: 12px; max-width: 70ch; font-size: clamp(16px, 1.3vw, 18px); color: var(--ink-2); margin-top: 8px; }
+.sources { margin-top: 18px; font-size: 13px; color: var(--muted); }
+.sources a { text-decoration: underline; text-underline-offset: 3px; margin-right: 6px; }
+
 /* ---------- HP (< 1024px): alur biasa + geser horizontal, seperti landing ---------- */
 @media (max-width: 1023.98px) {
   .nav { padding: 16px; }
@@ -265,3 +274,4 @@ ul, ol { padding: 0; list-style: none; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+.lead + .links-row { margin-top: 24px; }

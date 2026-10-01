@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE } = require('./seo-content.js');
+const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES } = require('./seo-content.js');
 
 const ROOT = path.join(__dirname, '..');
 const BASE = 'https://xnkbooking.my.id';
@@ -98,7 +98,13 @@ function businessLd(paket, kelas, lokasi) {
     image: BASE + '/img/og.jpg', logo: BASE + '/icon-192.png', telephone: '+' + WA_NUMBER,
     description: 'Personal trainer berbasis sport science di Banjarnegara & Purwokerto: fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.',
     areaServed: AREAS.map(a => ({ '@type': 'City', name: a })), inLanguage: 'id', priceRange: 'Rp',
-    founder: { '@type': 'Person', '@id': BASE + '/#coach', name: COACH, jobTitle: 'Personal Trainer', knowsAbout: PROGRAMS, sameAs: [INSTAGRAM] },
+    founder: {
+      '@type': 'Person', '@id': BASE + '/#coach', name: COACH, legalName: COACH_FULL_NAME, alternateName: [COACH, 'Jizdan'], jobTitle: 'Personal Trainer',
+      knowsAbout: PROGRAMS.concat(['Personal training', 'Pencak silat', 'Pendidikan jasmani']), sameAs: [INSTAGRAM],
+      alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universitas Jenderal Soedirman', sameAs: 'https://www.unsoed.ac.id/' },
+      award: 'Juara 2 Senam Virtual UMPP 2023, kategori grup putra (aerobik lagu bebas)',
+      subjectOf: COACH_SOURCES.map(x => ({ '@type': 'WebPage', name: x.name, url: x.url }))
+    },
     makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
     sameAs: [INSTAGRAM], knowsLanguage: 'id'
   };
@@ -297,6 +303,11 @@ function ctaBand(text) {
   return '<section class="sec sec-cta"><div class="wrap"><h2 class="h2">' + text + '</h2><div class="hero-actions"><a class="btn btn-light" href="' + BOOK_URL + '">Booking trial gratis' + ARROW + '</a>' +
     '<a class="btn btn-ghost" href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>';
 }
+function coachBlock() {
+  return '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Tentang coach</p><h2 class="h2 h2-sm">Coach Jizdan, personal trainer Purwokerto &amp; Banjarnegara</h2>' +
+    '<div class="prose">' + COACH_BIO.map(t => '<p>' + esc(t) + '</p>').join('') + '</div>' +
+    '<p class="sources">Sumber: ' + COACH_SOURCES.map(x => '<a href="' + x.url + '" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p></div></section>';
+}
 function otherLinks(currentKey) {
   const links = Object.keys(CITIES).filter(k => k !== currentKey).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>');
   if (currentKey !== 'online') links.push('<a href="/' + ONLINE.slug + '/">Personal trainer online</a>');
@@ -318,7 +329,7 @@ function buildCity(key, paket, kelas) {
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Keunggulan</p><h2 class="h2 h2-sm">' + esc(c.whyTitle) + '</h2>' + checkList(WHY) + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program personal training di ' + esc(c.nama) + '</h2>' + programList() + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
-    place +
+    coachBlock() + place +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Harga</p><h2 class="h2 h2-sm">Harga personal trainer ' + esc(c.nama) + '</h2>' +
     '<p class="lead">' + (ctx.low ? 'Paket mulai dari ' + ctx.low + '. ' : '') + 'Ada paket pelajar, mahasiswa, umum, dan premium, dan harga tercantum jelas. <a href="/harga/">Lihat semua harga dan paket</a>.</p></div></section>' +
     '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ ' + esc(c.nama) + '</h2></div><div class="faq-list">' + faqHtml(c.faq, ctx) + '</div></div></section>' +
@@ -341,7 +352,7 @@ function buildOnline(paket, kelas) {
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Untuk siapa</p><h2 class="h2 h2-sm">Cocok kalau kamu</h2>' + checkList(ONLINE.forWho) + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Bagaimana latihan online berjalan</h2>' + stepList(ONLINE.how) + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Kota</p><h2 class="h2 h2-sm">Online dari Purwokerto dan Banjarnegara</h2><div class="prog-grid">' + cityBlocks + '</div></div></section>' +
-    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program yang bisa dijalani online</h2>' + programList() + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program yang bisa dijalani online</h2>' + programList() + '</div></section>' + coachBlock() +
     '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ online</h2></div><div class="faq-list">' + faqHtml(ONLINE.faq, ctx) + '</div></div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lihat juga</p>' + otherLinks('online') + '</div></section>' +
     ctaBand('Mulai latihan online');
@@ -365,17 +376,37 @@ function seoHead(paket, kelas) {
 // Real, visible text for people without JavaScript (and for crawlers that read <noscript>).
 function seoBody(paket, kelas) {
   const li = paket.packages.slice(0, 12).map(p => '<li>' + esc(p.namaPaket) + ': ' + rupiah(p.harga) + (p.jumlahSesi ? ' (' + p.jumlahSesi + ' sesi)' : '') + '</li>').join('');
-  return '<noscript><main style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;line-height:1.6">' +
-    '<h1>' + COACH + ' · Personal Trainer ' + AREAS.join(' &amp; ') + '</h1>' +
+  return '<noscript><div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;line-height:1.6">' +
+    '<p><strong>' + COACH + ' · Personal Trainer ' + AREAS.join(' &amp; ') + '</strong></p>' +
     '<p>Personal training berbasis sport science: ' + PROGRAMS.map(esc).join(', ') + '. 1 sesi trial gratis.</p>' +
     (li ? '<h2>Paket</h2><ul>' + li + '</ul>' : '') +
     '<p>' + Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join(' · ') + ' · <a href="/' + ONLINE.slug + '/">Personal trainer online</a></p>' +
     '<p><a href="/harga/">Lihat semua harga</a>' + (kelas.length ? ' · <a href="/kelas/">Kelas</a>' : '') + ' · <a href="' + BOOK_URL + '">Booking</a> · <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '">WhatsApp</a></p>' +
-    '</main></noscript>';
+    '</div></noscript>';
+}
+
+
+// Visible section under the landing iframe on the home page: real text, same facts as the landing. Never hidden.
+const SEO_MAIN = ['<!--SEO-MAIN:START-->', '<!--SEO-MAIN:END-->'];
+function seoMain(paket, kelas) {
+  const ctx = { low: lowPrice(paket) };
+  const cityLinks = Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join('') +
+    '<a href="/' + ONLINE.slug + '/">Personal trainer online</a><a href="/harga/">Harga &amp; paket</a>';
+  return '<div class="more-strip"><a href="#info">Personal trainer Purwokerto · Banjarnegara · Online <span aria-hidden="true">↓</span></a></div>\n' +
+    '<main id="info" class="home-info">' +
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Banjarnegara &amp; Purwokerto</p><h1 class="h2">Personal Trainer Purwokerto &amp; Banjarnegara</h1>' +
+    '<p class="lead">Coach Jizdan mendampingi latihan 1-on-1 berbasis sport science, tatap muka di Purwokerto dan Banjarnegara maupun online. Fat loss, muscle building, strength &amp; conditioning, dan sports performance.' + (ctx.low ? ' Paket mulai dari ' + ctx.low + '.' : '') + ' Ada 1 sesi trial gratis.</p>' +
+    '<p class="links-row">' + cityLinks + '</p></div></section>' +
+    coachBlock() +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Satu tujuan, satu program untukmu</h2>' + programList() + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ</h2></div><div class="faq-list">' +
+    FAQ.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>' +
+    ctaBand('Mulai latihan bersama Coach Jizdan') + '</main>';
 }
 
 function renderIndex(html, paket, kelas) {
-  return between(between(html, SEO_HEAD, seoHead(paket, kelas)), SEO_BODY, seoBody(paket, kelas));
+  return between(between(between(html, SEO_HEAD, seoHead(paket, kelas)), SEO_BODY, seoBody(paket, kelas)), SEO_MAIN, seoMain(paket, kelas));
 }
 
 // ── sitemap, robots, llms.txt ────────────────────────────────────────────────

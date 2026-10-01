@@ -30,10 +30,32 @@ function merge(previous, fresh, nowIso) {
   return Object.assign({ updatedAt: same ? previous.updatedAt : nowIso }, fresh);
 }
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Apps Script answers through a redirect and is sometimes slow or picky about the caller, so: browser-like
+// headers, a timeout, 3 tries, and a readable log (final URL + start of the body) when it still fails.
+async function fetchPrices(url, tries) {
+  let last = '';
+  for (let i = 1; i <= tries; i++) {
+    try {
+      const res = await fetch(url, {
+        redirect: 'follow', signal: AbortSignal.timeout(30000),
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; xnk-price-sync/1.0)', Accept: 'application/json,text/plain,*/*' }
+      });
+      const text = await res.text();
+      if (res.ok) return JSON.parse(text);
+      last = 'HTTP ' + res.status + ' dari ' + res.url + ' · ' + text.slice(0, 200).replace(/\s+/g, ' ');
+    } catch (e) {
+      last = (e && e.name === 'SyntaxError') ? 'Respons bukan JSON.' : String(e && e.message || e);
+    }
+    console.error('Percobaan ' + i + '/' + tries + ' gagal: ' + last);
+    if (i < tries) await sleep(i * 5000);
+  }
+  throw new Error(last);
+}
+
 async function main() {
-  const res = await fetch(EXEC, { redirect: 'follow' });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const fresh = normalize(JSON.parse(await res.text()));
+  const fresh = normalize(await fetchPrices(EXEC, 3));
   const prev = JSON.parse(fs.readFileSync(FILE, 'utf8'));
   fs.writeFileSync(FILE, JSON.stringify(merge(prev, fresh, new Date().toISOString()), null, 2) + '\n');
   console.log('Paket: ' + fresh.packages.length);

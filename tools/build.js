@@ -106,7 +106,8 @@ function businessLd(paket, kelas, lokasi) {
       subjectOf: COACH_SOURCES.map(x => ({ '@type': 'WebPage', name: x.name, url: x.url }))
     },
     makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
-    sameAs: [INSTAGRAM], knowsLanguage: 'id'
+    sameAs: [INSTAGRAM], knowsLanguage: 'id',
+    contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', telephone: '+' + WA_NUMBER, availableLanguage: 'id', areaServed: 'ID' }
   };
   const places = Object.keys(CITIES).map(k => placeLd(k, lokasi && lokasi[k])).filter(Boolean);
   if (places.length) biz.location = places;
@@ -185,7 +186,7 @@ function page(o) {
     '<div class="footer-brand"><span class="logo"><span class="logo-mark logo-mark-light"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span><span class="logo-word">XNK</span></span>' +
     '<p>Personal training berbasis sport science bersama ' + COACH + ' di ' + AREAS.join(' &amp; ') + '.</p></div>' +
     '<div class="footer-col"><p class="footer-h">Menu</p>' + items.map(i => '<a href="' + i[0] + '">' + i[1] + '</a>').join('') + '</div>' +
-    '<div class="footer-col"><p class="footer-h">Kontak</p><a href="' + BOOK_URL + '">Booking &amp; login klien</a><a href="' + wa + '" rel="noopener">WhatsApp</a></div></div>' +
+    '<div class="footer-col"><p class="footer-h">Kontak</p><a href="' + BOOK_URL + '">Booking &amp; login klien</a><a href="' + wa + '" rel="noopener">WhatsApp</a><a href="/tentang/">Tentang</a><a href="/privasi/">Kebijakan privasi</a></div></div>' +
     '<div class="footer-giant" aria-hidden="true">XNK</div><p class="wrap footer-copy">&copy; 2026 XNK Personal Training. All rights reserved.</p></footer>\n' +
     '<script>(function(){var b=document.getElementById("burger"),n=document.getElementById("nav"),m=document.getElementById("m-menu");' +
     'function t(o){document.body.classList.toggle("menu-open",o);b.setAttribute("aria-expanded",o);m.setAttribute("aria-hidden",!o);}' +
@@ -362,6 +363,69 @@ function buildOnline(paket, kelas) {
   });
 }
 
+
+// ── trust pages: /tentang/ and /privasi/ ─────────────────────────────────────
+
+const NEVER_ASK = [
+  'Kami tidak pernah meminta kata sandi, PIN, atau kode OTP kamu.',
+  'Kami tidak pernah meminta nomor kartu kredit atau data perbankan lewat situs ini.',
+  'Situs ini tidak memproses pembayaran. Pembayaran paket dilakukan langsung kepada coach.',
+  'Kami tidak mengirim pesan berisi tautan pembayaran atau meminta transfer ke rekening yang berbeda dari yang kamu terima langsung dari coach.'
+];
+const PRIVACY_UPDATED = '1 Oktober 2026';
+
+function buildTentang(paket, kelas) {
+  const url = BASE + '/tentang/';
+  const l = LOKASI.purwokerto || {};
+  const where = '<div class="prose">' +
+    (l.alamat ? '<p><b>Purwokerto:</b> ' + (l.nama ? esc(l.nama) + ', ' : '') + esc(l.alamat) + (l.kodePos ? ' ' + esc(l.kodePos) : '') + '.' + (l.maps ? ' <a href="' + esc(l.maps) + '" rel="noopener">Buka di Google Maps</a>.' : '') + '</p>' : '<p><b>Purwokerto:</b> hubungi coach untuk lokasi latihan.</p>') +
+    '<p><b>Banjarnegara:</b> layanan berupa area layanan (tanpa alamat tetap). Hubungi coach lewat WhatsApp untuk mengatur lokasi dan jadwal.</p></div>';
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Tentang</p><h1 class="h2">Tentang Coach Jizdan &amp; XNK Personal Training</h1>' +
+    '<p class="lead">Halaman ini menjelaskan siapa di balik xnkbooking.my.id, di mana kami melatih, bagaimana pembayaran bekerja, dan apa yang tidak pernah kami minta darimu.</p></div></section>' +
+    coachBlock() +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lokasi</p><h2 class="h2 h2-sm">Di mana latihan berlangsung</h2>' + where + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Kontak</p><h2 class="h2 h2-sm">Hubungi langsung</h2><div class="prose">' +
+    '<p>WhatsApp: <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">+62 882-2125-4305</a></p>' +
+    '<p>Instagram: <a href="' + INSTAGRAM + '" rel="noopener">@jiz.dan</a></p>' +
+    '<p>Booking klien: <a href="' + BOOK_URL + '">book.xnkbooking.my.id</a> (masuk dengan nomor WhatsApp)</p></div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Pembayaran</p><h2 class="h2 h2-sm">Bagaimana pembayaran bekerja</h2><div class="prose"><p>' + esc(FAQ[1][1]) + '</p></div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Keamanan</p><h2 class="h2 h2-sm">Yang tidak pernah kami minta</h2>' + checkList(NEVER_ASK) +
+    '<p class="sources">Lihat juga <a href="/privasi/">kebijakan privasi</a>. Menemukan sesuatu yang mencurigakan atas nama kami? Beri tahu lewat WhatsApp di atas.</p></div></section>' +
+    ctaBand('Ada pertanyaan? Tanya langsung');
+  return page({
+    title: 'Tentang Coach Jizdan & XNK Personal Training', description: 'Siapa di balik xnkbooking.my.id: Coach Jizdan, personal trainer di Purwokerto dan Banjarnegara. Lokasi, kontak, cara pembayaran, dan yang tidak pernah kami minta.',
+    url: url, index: true, current: 'tentang', showKelas: kelas.length > 0, body: body,
+    ld: [businessLd(paket, kelas), { '@context': 'https://schema.org', '@type': 'AboutPage', url: url, name: 'Tentang XNK Personal Training', about: { '@id': BASE + '/#business' }, inLanguage: 'id' }, breadcrumbLd('Tentang', url)]
+  });
+}
+
+function buildPrivasi(paket, kelas) {
+  const url = BASE + '/privasi/';
+  const sec = (h, ps) => '<section class="sec sec-paket"><div class="wrap"><h2 class="h2 h2-sm">' + h + '</h2><div class="prose">' + ps.map(t => '<p>' + t + '</p>').join('') + '</div></div></section>';
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Privasi</p><h1 class="h2">Kebijakan privasi</h1>' +
+    '<p class="lead">Berlaku untuk xnkbooking.my.id dan portal klien book.xnkbooking.my.id. Terakhir diperbarui ' + PRIVACY_UPDATED + '.</p></div></section>' +
+    sec('Data yang kami kumpulkan', ['Saat mendaftar atau masuk: nama dan nomor WhatsApp. Saat memakai layanan: jadwal sesi, paket, dan catatan latihan.',
+      'Jika kamu memilih memakainya: catatan progres (berat badan, lingkar tubuh) dan foto progres. Semuanya opsional.']) +
+    sec('Untuk apa data dipakai', ['Mengatur jadwal dan paket latihan, mengingatkan sesi lewat WhatsApp, dan memantau progres latihanmu bersama coach.']) +
+    sec('Siapa yang bisa melihat', ['Hanya coach. Data tidak dijual dan tidak dibagikan ke pihak lain untuk iklan.',
+      'Foto progres bersifat pribadi: hanya bisa dilihat kamu dan coach. Nomor WhatsApp klien tidak ditampilkan kepada klien lain.']) +
+    sec('Penyimpanan', ['Data disimpan di layanan Google (Google Sheets dan Google Drive) dan diakses lewat aplikasi web kami. Situs memakai Google Analytics untuk statistik kunjungan.']) +
+    sec('Hak kamu', ['Kamu bisa meminta data dihapus atau diperbaiki kapan saja dengan menghubungi coach lewat <a href="' + waLink('Halo Coach Jizdan, saya ingin meminta penghapusan atau perbaikan data saya.') + '" rel="noopener">WhatsApp</a>.']) +
+    sec('Yang tidak pernah kami minta', NEVER_ASK.map(esc)) +
+    sec('Kontak', ['Pertanyaan tentang privasi: WhatsApp +62 882-2125-4305. Lihat juga <a href="/tentang/">Tentang kami</a>.']);
+  return page({
+    title: 'Kebijakan Privasi · XNK Personal Training', description: 'Data apa yang dikumpulkan xnkbooking.my.id dan portal klien, untuk apa dipakai, siapa yang bisa melihat, dan cara meminta penghapusan.',
+    url: url, index: true, current: 'privasi', showKelas: kelas.length > 0, body: body,
+    ld: [breadcrumbLd('Kebijakan privasi', url)]
+  });
+}
+
+function buildSecurityTxt() {
+  return ['Contact: https://wa.me/' + WA_NUMBER, 'Expires: 2027-10-01T00:00:00.000Z', 'Preferred-Languages: id, en', 'Canonical: ' + BASE + '/.well-known/security.txt', ''].join('\n');
+}
+
 // ── index.html (wrapper) ─────────────────────────────────────────────────────
 
 function between(html, markers, inner) {
@@ -396,7 +460,8 @@ function seoMain(paket, kelas) {
     '<main id="info" class="home-info">' +
     '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Banjarnegara &amp; Purwokerto</p><h1 class="h2">Personal Trainer Purwokerto &amp; Banjarnegara</h1>' +
     '<p class="lead">Coach Jizdan mendampingi latihan 1-on-1 berbasis sport science, tatap muka di Purwokerto dan Banjarnegara maupun online. Fat loss, muscle building, strength &amp; conditioning, dan sports performance.' + (ctx.low ? ' Paket mulai dari ' + ctx.low + '.' : '') + ' Ada 1 sesi trial gratis.</p>' +
-    '<p class="links-row">' + cityLinks + '</p></div></section>' +
+    '<p class="links-row">' + cityLinks + '</p>' +
+    '<p class="trust-strip"><b>Resmi dan aman:</b> tidak ada pembayaran lewat situs ini dan kami tidak pernah meminta kata sandi atau OTP. <a href="/tentang/">Tentang kami</a> · <a href="/privasi/">Kebijakan privasi</a> · <a href="' + INSTAGRAM + '" rel="noopener">Instagram @jiz.dan</a></p></div></section>' +
     coachBlock() +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Satu tujuan, satu program untukmu</h2>' + programList() + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
@@ -418,6 +483,7 @@ function buildSitemap(paket, kelas) {
   if (!paket.packages.length) urls.splice(1, 1);
   Object.keys(CITIES).forEach(k => urls.push(['/' + CITIES[k].slug + '/', '0.9']));
   urls.push(['/' + ONLINE.slug + '/', '0.8']);
+  urls.push(['/tentang/', '0.6'], ['/privasi/', '0.3']);
   if (kelas.length) urls.push(['/kelas/', '0.7']);
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(u => '  <url><loc>' + BASE + u[0] + '</loc>' + lm + '<priority>' + u[1] + '</priority></url>').join('\n') + '\n</urlset>\n';
@@ -433,7 +499,9 @@ function buildLlms(paket, kelas) {
     '- [Beranda](' + BASE + '/): profil coach, program, jadwal slot kosong, FAQ',
     '- [Harga](' + BASE + '/harga/): daftar paket dan harga (Rupiah)'
   ].concat(Object.keys(CITIES).map(k => '- [Personal Trainer ' + CITIES[k].nama + '](' + BASE + '/' + CITIES[k].slug + '/): layanan personal training tatap muka di ' + CITIES[k].nama))
-    .concat(['- [Personal Trainer Online](' + BASE + '/' + ONLINE.slug + '/): latihan online dari Purwokerto, Banjarnegara, atau kota lain']);
+    .concat(['- [Personal Trainer Online](' + BASE + '/' + ONLINE.slug + '/): latihan online dari Purwokerto, Banjarnegara, atau kota lain',
+      '- [Tentang](' + BASE + '/tentang/): siapa di balik situs ini, lokasi, kontak, cara pembayaran',
+      '- [Kebijakan privasi](' + BASE + '/privasi/): data yang dikumpulkan dan hak pengguna']);
   if (kelas.length) lines.push('- [Kelas](' + BASE + '/kelas/): jadwal dan harga kelas');
   lines.push('- [Booking klien](' + BOOK_URL + '): login dengan nomor WhatsApp dan booking sesi', '');
   if (paket.packages.length) {
@@ -468,6 +536,9 @@ function build(files) {
   };
   Object.keys(CITIES).forEach(k => { out[CITIES[k].slug + '/index.html'] = buildCity(k, paket, kelas); });
   out[ONLINE.slug + '/index.html'] = buildOnline(paket, kelas);
+  out['tentang/index.html'] = buildTentang(paket, kelas);
+  out['privasi/index.html'] = buildPrivasi(paket, kelas);
+  out['.well-known/security.txt'] = buildSecurityTxt();
   return out;
 }
 

@@ -1,0 +1,4 @@
+Contact: https://wa.me/6288221254305
+Expires: 2027-10-01T00:00:00.000Z
+Preferred-Languages: id, en
+Canonical: https://xnkbooking.my.id/.well-known/security.txt

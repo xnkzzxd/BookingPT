@@ -9,6 +9,8 @@
 - [Personal Trainer Purwokerto](https://xnkbooking.my.id/personal-trainer-purwokerto/): layanan personal training tatap muka di Purwokerto
 - [Personal Trainer Banjarnegara](https://xnkbooking.my.id/personal-trainer-banjarnegara/): layanan personal training tatap muka di Banjarnegara
 - [Personal Trainer Online](https://xnkbooking.my.id/personal-trainer-online/): latihan online dari Purwokerto, Banjarnegara, atau kota lain
+- [Tentang](https://xnkbooking.my.id/tentang/): siapa di balik situs ini, lokasi, kontak, cara pembayaran
+- [Kebijakan privasi](https://xnkbooking.my.id/privasi/): data yang dikumpulkan dan hak pengguna
 - [Booking klien](https://book.xnkbooking.my.id/): login dengan nomor WhatsApp dan booking sesi
 
 ## Paket

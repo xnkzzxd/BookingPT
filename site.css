@@ -241,6 +241,10 @@ ul, ol { padding: 0; list-style: none; }
 .sources { margin-top: 18px; font-size: 13px; color: var(--muted); }
 .sources a { text-decoration: underline; text-underline-offset: 3px; margin-right: 6px; }
 
+/* ---------- Strip kepercayaan ---------- */
+.trust-strip { margin-top: 20px; max-width: 70ch; font-size: 14px; color: var(--ink-2); }
+.trust-strip a { text-decoration: underline; text-underline-offset: 3px; margin-right: 4px; }
+
 /* ---------- HP (< 1024px): alur biasa + geser horizontal, seperti landing ---------- */
 @media (max-width: 1023.98px) {
   .nav { padding: 16px; }

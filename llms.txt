@@ -6,6 +6,9 @@
 
 - [Beranda](https://xnkbooking.my.id/): profil coach, program, jadwal slot kosong, FAQ
 - [Harga](https://xnkbooking.my.id/harga/): daftar paket dan harga (Rupiah)
+- [Personal Trainer Purwokerto](https://xnkbooking.my.id/personal-trainer-purwokerto/): layanan personal training tatap muka di Purwokerto
+- [Personal Trainer Banjarnegara](https://xnkbooking.my.id/personal-trainer-banjarnegara/): layanan personal training tatap muka di Banjarnegara
+- [Personal Trainer Online](https://xnkbooking.my.id/personal-trainer-online/): latihan online dari Purwokerto, Banjarnegara, atau kota lain
 - [Booking klien](https://book.xnkbooking.my.id/): login dengan nomor WhatsApp dan booking sesi
 
 ## Paket

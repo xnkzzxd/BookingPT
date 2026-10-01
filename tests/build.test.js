@@ -103,3 +103,70 @@ test('theme: landing fonts, fixed nav with burger menu, black footer, one featur
   assert.ok(/<article class="price featured" id="P4">/.test(h3), 'the middle card (of 3) is featured');
   for (const m of h3.matchAll(/href="#(kategori-[a-z]+)"/g)) assert.ok(h3.includes('id="' + m[1] + '"'), m[1]);
 });
+
+// ── keyword pages ────────────────────────────────────────────────────────────
+const KEYWORD_PAGES = ['personal-trainer-purwokerto', 'personal-trainer-banjarnegara', 'personal-trainer-online'];
+const LOKASI_FULL = { purwokerto: { nama: 'Studio X', alamat: 'Jl. Contoh No. 1', kodePos: '53111', maps: 'https://maps.app.goo.gl/x', lat: -7.42, lng: 109.24 }, banjarnegara: {} };
+const decode = s => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+
+test('keyword pages: unique title/description/canonical, exactly one h1 with the keyword, indexable', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  const titles = new Set(), descs = new Set();
+  for (const slug of KEYWORD_PAGES) {
+    const h = out[slug + '/index.html'];
+    assert.ok(h, slug);
+    assert.equal((h.match(/<h1[ >]/g) || []).length, 1, slug + ' h1 count');
+    assert.match(h, new RegExp('<link rel="canonical" href="https://xnkbooking\\.my\\.id/' + slug + '/">'));
+    assert.match(h, /index, follow/);
+    titles.add(h.match(/<title>(.*?)<\/title>/)[1]); descs.add(h.match(/<meta name="description" content="(.*?)">/)[1]);
+    assert.ok(decode(h.match(/<title>(.*?)<\/title>/)[1]).length <= 70, 'title not too long');
+    assert.ok(decode(h.match(/<meta name="description" content="(.*?)">/)[1]).length <= 160, 'description fits a snippet');
+  }
+  assert.equal(titles.size, 3); assert.equal(descs.size, 3);
+  assert.match(decode(out['personal-trainer-purwokerto/index.html']), /<h1[^>]*>Personal Trainer Purwokerto<\/h1>/);
+  assert.match(decode(out['personal-trainer-online/index.html']), /Online Purwokerto &amp; Banjarnegara|Online Purwokerto & Banjarnegara/);
+});
+
+test('keyword pages: in the sitemap, linked from home noscript, nav and each other; every internal link resolves', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  for (const slug of KEYWORD_PAGES) {
+    assert.ok(out['sitemap.xml'].includes('/' + slug + '/'), slug + ' in sitemap');
+    assert.ok(out['index.html'].includes('href="/' + slug + '/"'), slug + ' linked from home');
+    assert.ok(out['llms.txt'].includes('/' + slug + '/'));
+  }
+  const exists = p => p === '/' || out[p.replace(/^\//, '') + 'index.html'] !== undefined || ['/harga/', '/kelas/'].includes(p);
+  for (const [f, h] of Object.entries(out)) {
+    if (!f.endsWith('.html')) continue;
+    for (const m of h.matchAll(/href="(\/[^"#]*)(#[^"]*)?"/g)) if (/\/$/.test(m[1])) assert.ok(exists(m[1]), f + ' links to missing ' + m[1]);
+  }
+});
+
+test('keyword pages: FAQ text equals FAQPage JSON-LD, Service JSON-LD has the lowest price from the data', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  for (const slug of KEYWORD_PAGES) {
+    const h = out[slug + '/index.html'], blocks = jsonLd(h);
+    const faq = blocks.find(b => b['@type'] === 'FAQPage');
+    assert.ok(faq && faq.mainEntity.length >= 5);
+    for (const q of faq.mainEntity) assert.ok(decode(h).includes(q.acceptedAnswer.text), 'answer visible on page: ' + q.name);
+    const svc = blocks.find(b => b['@type'] === 'Service');
+    assert.equal(svc.offers.lowPrice, '800000'); assert.equal(svc.offers.highPrice, '1500000'); assert.equal(svc.offers.offerCount, '2');
+    assert.ok(blocks.some(b => b['@type'] === 'BreadcrumbList'));
+  }
+  assert.ok(out['personal-trainer-purwokerto/index.html'].includes('mulai dari Rp 800.000'));
+});
+
+test('local business data: no address given = service area only (nothing invented); address given = Place with geo, shown on the city page', () => {
+  const none = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  assert.ok(!jsonLd(none['index.html']).some(b => b.location));
+  assert.ok(!none['personal-trainer-purwokerto/index.html'].includes('Lokasi latihan'));
+  const full = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: LOKASI_FULL });
+  const biz = jsonLd(full['index.html']).find(b => b['@type'] === 'ProfessionalService');
+  assert.equal(biz.location.length, 1);
+  assert.equal(biz.location[0].address.streetAddress, 'Jl. Contoh No. 1');
+  assert.equal(biz.location[0].address.addressLocality, 'Purwokerto');
+  assert.equal(biz.location[0].geo.latitude, -7.42);
+  assert.ok(biz.sameAs.includes('https://www.instagram.com/jiz.dan/'));
+  const h = full['personal-trainer-purwokerto/index.html'];
+  assert.ok(h.includes('Lokasi latihan') && h.includes('Studio X') && h.includes('Jl. Contoh No. 1'));
+  assert.ok(!full['personal-trainer-banjarnegara/index.html'].includes('Lokasi latihan'));
+});

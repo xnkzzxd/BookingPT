@@ -1,4 +1,18 @@
 {
-  "purwokerto": { "nama": "", "alamat": "", "kodePos": "", "maps": "", "lat": null, "lng": null },
-  "banjarnegara": { "nama": "", "alamat": "", "kodePos": "", "maps": "", "lat": null, "lng": null }
+  "purwokerto": {
+    "nama": "Wellness Gym",
+    "alamat": "Jl. Jatisari No.24, Karangmiri, Sumampir, Purwokerto Utara, Kabupaten Banyumas",
+    "kodePos": "53125",
+    "maps": "",
+    "lat": null,
+    "lng": null
+  },
+  "banjarnegara": {
+    "nama": "",
+    "alamat": "",
+    "kodePos": "",
+    "maps": "",
+    "lat": null,
+    "lng": null
+  }
 }

@@ -89,4 +89,16 @@ const ONLINE = {
   ]
 };
 
-module.exports = { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE };
+// Credentials come from the owner's confirmation and the two public articles below. Do not go beyond them.
+const COACH_FULL_NAME = 'Yandura Jizdan Hasya Husnayain';
+const COACH_BIO = [
+  'Coach Jizdan (' + COACH_FULL_NAME + ') berlatar belakang pendidikan jasmani di Universitas Jenderal Soedirman (UNSOED), Purwokerto.',
+  'Pada 2023 ia memimpin tim UNSOED meraih Juara 2 (runner-up 1) Senam Virtual UMPP, kategori grup putra (aerobik lagu bebas).',
+  'Ia guru pendidikan jasmani dan pelatih pencak silat bersertifikat, dengan pengalaman melatih pemula, pelajar, mahasiswa, pekerja kantoran, hingga atlet.'
+];
+const COACH_SOURCES = [
+  { name: 'UNSOED: Delegasi UNSOED raih prestasi Senam Virtual 2023', url: 'https://old.unsoed.ac.id/id/delegasi-unsoed-raih-prestasi-senam-virtual-2023' },
+  { name: 'ANTARA Jateng: Mahasiswa Unsoed Purwokerto raih prestasi Senam Virtual 2023', url: 'https://jateng.antaranews.co/berita/487353/mahaiswa-unsoed-purwokerto-raih-prestasi-senam-virtual-2023' }
+];
+
+module.exports = { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES };

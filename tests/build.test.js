@@ -170,3 +170,32 @@ test('local business data: no address given = service area only (nothing invente
   assert.ok(h.includes('Lokasi latihan') && h.includes('Studio X') && h.includes('Jl. Contoh No. 1'));
   assert.ok(!full['personal-trainer-banjarnegara/index.html'].includes('Lokasi latihan'));
 });
+
+// ── coach credentials, visible home section ──────────────────────────────────
+test('coach: bio and both source links on city, online and home pages; Person JSON-LD matches the sources', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  for (const f of ['personal-trainer-purwokerto/index.html', 'personal-trainer-banjarnegara/index.html', 'personal-trainer-online/index.html', 'index.html']) {
+    const h = out[f];
+    assert.ok(h.includes('Universitas Jenderal Soedirman'), f);
+    assert.ok(h.includes('href="https://old.unsoed.ac.id/id/delegasi-unsoed-raih-prestasi-senam-virtual-2023"'), f);
+    assert.ok(h.includes('href="https://jateng.antaranews.co/berita/487353/mahaiswa-unsoed-purwokerto-raih-prestasi-senam-virtual-2023"'), f);
+    assert.ok(!/alumnus|alumni(?! )/i.test(decode(h.replace(/<script[\s\S]*?<\/script>/g, ''))), 'no unconfirmed alumnus claim in visible text: ' + f);
+  }
+  const person = jsonLd(out['index.html']).find(b => b['@type'] === 'ProfessionalService').founder;
+  assert.equal(person.legalName, 'Yandura Jizdan Hasya Husnayain');
+  assert.equal(person.alumniOf.name, 'Universitas Jenderal Soedirman');
+  assert.match(person.award, /Juara 2 Senam Virtual UMPP 2023/);
+  assert.equal(person.subjectOf.length, 2);
+  assert.ok(person.sameAs.includes('https://www.instagram.com/jiz.dan/'));
+});
+
+test('home: visible keyword section under the iframe, real text, links resolve, nothing hidden', () => {
+  const h = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} })['index.html'];
+  const main = h.slice(h.indexOf('<!--SEO-MAIN:START-->'), h.indexOf('<!--SEO-MAIN:END-->'));
+  assert.ok(main.includes('<h1 class="h2">Personal Trainer Purwokerto &amp; Banjarnegara</h1>'));
+  assert.ok(main.includes('mulai dari Rp 800.000') && main.includes('href="#info"') && main.includes('id="info"'));
+  for (const slug of KEYWORD_PAGES) assert.ok(main.includes('href="/' + slug + '/"'), slug);
+  assert.equal((h.match(/<h1[ >]/g) || []).length, 1, 'one h1 on the home page');
+  assert.ok(!/display:\s*none|visibility:\s*hidden|text-indent:\s*-|left:\s*-\d{3,}|font-size:\s*0|opacity:\s*0[;"]/i.test(main), 'no hiding techniques in the visible section');
+  assert.ok(h.indexOf('<iframe') < h.indexOf('<!--SEO-MAIN:START-->'));
+});

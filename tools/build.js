@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES } = require('./seo-content.js');
+const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES, TRUST_FAQ } = require('./seo-content.js');
 
 const ROOT = path.join(__dirname, '..');
 const BASE = 'https://xnkbooking.my.id';
@@ -125,10 +125,10 @@ function businessLd(paket, kelas, lokasi) {
 function siteLd() {
   return { '@context': 'https://schema.org', '@type': 'WebSite', '@id': BASE + '/#website', url: BASE + '/', name: NAME, inLanguage: 'id', publisher: { '@id': BASE + '/#business' } };
 }
-function faqLd() {
+function faqLd(items) {
   return {
     '@context': 'https://schema.org', '@type': 'FAQPage',
-    mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
+    mainEntity: (items || FAQ).map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
   };
 }
 function breadcrumbLd(label, url) {
@@ -389,6 +389,8 @@ function buildTentang(paket, kelas) {
     '<p>WhatsApp: <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">+62 882-2125-4305</a></p>' +
     '<p>Instagram: <a href="' + INSTAGRAM + '" rel="noopener">@jiz.dan</a></p>' +
     '<p>Booking klien: <a href="' + BOOK_URL + '">book.xnkbooking.my.id</a> (masuk dengan nomor WhatsApp)</p></div></div></section>' +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan</p><h2 class="h2">Resmi dan aman?</h2></div><div class="faq-list">' +
+    TRUST_FAQ.map(([q, a]) => '<details class="faq-item" open><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Pembayaran</p><h2 class="h2 h2-sm">Bagaimana pembayaran bekerja</h2><div class="prose"><p>' + esc(FAQ[1][1]) + '</p></div></div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Keamanan</p><h2 class="h2 h2-sm">Yang tidak pernah kami minta</h2>' + checkList(NEVER_ASK) +
     '<p class="sources">Lihat juga <a href="/privasi/">kebijakan privasi</a>. Menemukan sesuatu yang mencurigakan atas nama kami? Beri tahu lewat WhatsApp di atas.</p></div></section>' +
@@ -396,7 +398,7 @@ function buildTentang(paket, kelas) {
   return page({
     title: 'Tentang Coach Jizdan & XNK Personal Training', description: 'Siapa di balik xnkbooking.my.id: Coach Jizdan, personal trainer di Purwokerto dan Banjarnegara. Lokasi, kontak, cara pembayaran, dan yang tidak pernah kami minta.',
     url: url, index: true, current: 'tentang', showKelas: kelas.length > 0, body: body,
-    ld: [businessLd(paket, kelas), { '@context': 'https://schema.org', '@type': 'AboutPage', url: url, name: 'Tentang XNK Personal Training', about: { '@id': BASE + '/#business' }, inLanguage: 'id' }, breadcrumbLd('Tentang', url)]
+    ld: [businessLd(paket, kelas), { '@context': 'https://schema.org', '@type': 'AboutPage', url: url, name: 'Tentang XNK Personal Training', about: { '@id': BASE + '/#business' }, inLanguage: 'id' }, faqLd(TRUST_FAQ), breadcrumbLd('Tentang', url)]
   });
 }
 
@@ -435,7 +437,7 @@ function between(html, markers, inner) {
 }
 
 function seoHead(paket, kelas) {
-  return [businessLd(paket, kelas), siteLd(), faqLd()].map(ld).join('\n');
+  return [businessLd(paket, kelas), siteLd(), faqLd(FAQ.concat(TRUST_FAQ))].map(ld).join('\n');
 }
 // Real, visible text for people without JavaScript (and for crawlers that read <noscript>).
 function seoBody(paket, kelas) {
@@ -466,7 +468,7 @@ function seoMain(paket, kelas) {
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Satu tujuan, satu program untukmu</h2>' + programList() + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
     '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ</h2></div><div class="faq-list">' +
-    FAQ.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>' +
+    FAQ.concat(TRUST_FAQ).map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>' +
     ctaBand('Mulai latihan bersama Coach Jizdan') + '</main>';
 }
 
@@ -517,6 +519,11 @@ function buildLlms(paket, kelas) {
     kelas.forEach(k => lines.push('- ' + k.nama + (k.jadwal ? ': ' + k.jadwal : '') + (Number(k.harga) > 0 ? ', ' + rupiah(k.harga) : '')));
     lines.push('');
   }
+  lines.push('## Verifikasi', '',
+    '- Pemilik: ' + COACH_FULL_NAME + ' (' + COACH + '), personal trainer di ' + AREAS.join(' dan ') + '. Instagram: ' + INSTAGRAM,
+    '- Situs ini tidak memproses pembayaran dan tidak meminta kata sandi, PIN, OTP, atau data kartu.');
+  COACH_SOURCES.forEach(x => lines.push('- Sumber: [' + x.name + '](' + x.url + ')'));
+  lines.push('');
   lines.push('## Kontak', '', '- WhatsApp: +' + WA_NUMBER, '- Lokasi: ' + AREAS.join(', '), '');
   return lines.join('\n');
 }

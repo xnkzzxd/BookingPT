@@ -28,6 +28,29 @@ const FAQ = [
 const INSTAGRAM = 'https://www.instagram.com/jiz.dan/';
 const PROGRAMS = ['Fat Loss', 'Muscle Building', 'Strength & Conditioning', 'Sports Performance'];
 
+// The real XNK mark (traced by tools/trace-logo.js) and the full icon/manifest head, shared by every page.
+const MARK = JSON.parse(fs.readFileSync(path.join(ROOT, 'brand', 'mark.json'), 'utf8'));
+function markSvg(fill) {
+  return '<svg viewBox="' + MARK.viewBox + '" fill="' + fill + '" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="' + MARK.d + '"/></svg>';
+}
+function iconHead() {
+  return [
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+    '<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">',
+    '<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">',
+    '<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">',
+    '<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">',
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">',
+    '<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0B0B0B">',
+    '<link rel="manifest" href="/site.webmanifest">',
+    '<meta name="application-name" content="XNK Personal Training">',
+    '<meta name="apple-mobile-web-app-title" content="XNK">',
+    '<meta name="msapplication-config" content="/browserconfig.xml">',
+    '<meta name="msapplication-TileColor" content="#0B0B0B">'
+  ].join('\n');
+}
+const SEO_ICONS = ['<!--ICONS:START-->', '<!--ICONS:END-->'];
+const SEO_MARK = ['<!--MARK:START-->', '<!--MARK:END-->'];
 const SEO_HEAD = ['<!--SEO:START-->', '<!--SEO:END-->'];
 const SEO_BODY = ['<!--SEO-BODY:START-->', '<!--SEO-BODY:END-->'];
 
@@ -95,7 +118,7 @@ function businessLd(paket, kelas, lokasi) {
   const biz = {
     '@context': 'https://schema.org', '@type': 'ProfessionalService', '@id': BASE + '/#business',
     name: NAME, alternateName: COACH + ' · Personal Trainer', url: BASE + '/',
-    image: BASE + '/img/og.jpg', logo: BASE + '/icon-192.png', telephone: '+' + WA_NUMBER,
+    image: [BASE + '/img/og.jpg', BASE + '/logo-512.png'], logo: { '@type': 'ImageObject', '@id': BASE + '/#logo', url: BASE + '/logo-512.png', contentUrl: BASE + '/logo-512.png', width: 512, height: 512, caption: NAME }, telephone: '+' + WA_NUMBER,
     description: 'Personal trainer berbasis sport science di Banjarnegara & Purwokerto: fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.',
     areaServed: AREAS.map(a => ({ '@type': 'City', name: a })), inLanguage: 'id', priceRange: 'Rp',
     founder: {
@@ -140,7 +163,7 @@ function breadcrumbLd(label, url) {
 
 // ── pages ────────────────────────────────────────────────────────────────────
 
-const LOGO_MARK = '<span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span>';
+const LOGO_MARK = '<span class="logo-mark">' + markSvg('#fff') + '</span>';
 const ARROW = '<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
@@ -170,7 +193,7 @@ function page(o) {
     '<meta property="og:url" content="' + o.url + '">\n<meta property="og:title" content="' + esc(o.title) + '">\n' +
     '<meta property="og:description" content="' + esc(o.description) + '">\n<meta property="og:image" content="' + BASE + '/img/og.jpg">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
-    '<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n' +
+    iconHead() + '\n' +
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
     '<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">\n' +
     '<link rel="stylesheet" href="/site.css">\n' +
@@ -183,7 +206,7 @@ function page(o) {
     '<div class="m-menu-foot"><a class="btn btn-light btn-block" href="' + BOOK_URL + '">Mulai Sekarang</a><a class="m-menu-wa" href="' + wa + '" rel="noopener">Chat WhatsApp →</a></div></div>\n' +
     '<main>\n' + o.body + '\n</main>\n' +
     '<footer class="footer"><div class="wrap footer-grid">' +
-    '<div class="footer-brand"><span class="logo"><span class="logo-mark logo-mark-light"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0B0B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5M7 17l5-5 5 5"/></svg></span><span class="logo-word">XNK</span></span>' +
+    '<div class="footer-brand"><span class="logo"><span class="logo-mark logo-mark-light">' + markSvg('#0B0B0B') + '</span><span class="logo-word">XNK</span></span>' +
     '<p>Personal training berbasis sport science bersama ' + COACH + ' di ' + AREAS.join(' &amp; ') + '.</p></div>' +
     '<div class="footer-col"><p class="footer-h">Menu</p>' + items.map(i => '<a href="' + i[0] + '">' + i[1] + '</a>').join('') + '</div>' +
     '<div class="footer-col"><p class="footer-h">Kontak</p><a href="' + BOOK_URL + '">Booking &amp; login klien</a><a href="' + wa + '" rel="noopener">WhatsApp</a><a href="/tentang/">Tentang</a><a href="/privasi/">Kebijakan privasi</a></div></div>' +
@@ -473,7 +496,8 @@ function seoMain(paket, kelas) {
 }
 
 function renderIndex(html, paket, kelas) {
-  return between(between(between(html, SEO_HEAD, seoHead(paket, kelas)), SEO_BODY, seoBody(paket, kelas)), SEO_MAIN, seoMain(paket, kelas));
+  const withMain = between(between(between(html, SEO_HEAD, seoHead(paket, kelas)), SEO_BODY, seoBody(paket, kelas)), SEO_MAIN, seoMain(paket, kelas));
+  return between(between(withMain, SEO_ICONS, iconHead()), SEO_MARK, markSvg('#fff'));
 }
 
 // ── sitemap, robots, llms.txt ────────────────────────────────────────────────
@@ -561,4 +585,4 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { build, cleanPaket, cleanKelas, businessLd, buildSitemap, renderIndex, esc };
+module.exports = { markSvg, iconHead, build, cleanPaket, cleanKelas, businessLd, buildSitemap, renderIndex, esc };

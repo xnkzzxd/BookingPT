@@ -88,12 +88,19 @@ Kirim ke media Banyumas/Banjarnegara cerita singkat: mahasiswa UNSOED juara sena
 
 ## 6. Kalau Google menampilkan ringkasan AI yang salah ("penipuan")
 
-Kasus Oktober 2026: ringkasan AI Google menyebut situs ini penipuan karena ada postingan Threads (sekitar April 2026) yang membagikan link situs dengan kalimat ajakan ("kalian ada yang pake tools kaya gini ga buat ngurus jadwal atau booking dari klien?") dan ada balasan yang menuduh postingan itu penipuan. Itu soal gaya postingannya, bukan situs ini.
+**Penyebab (Oktober 2026):** balasanmu di sebuah thread Threads yang viral (tentang klien yang memaksa transfer/QRIS) ikut terindeks bersama halaman thread itu. Di halaman yang sama ada balasan orang lain yang menulis "ini penipuan", dan itu tentang klien di thread tersebut, bukan tentang situsmu. Google menggabungkan keduanya, lalu ringkasan AI memakai itu karena belum ada halaman resmi yang menjawab. Tidak ada laporan apa pun tentang situsmu.
 
-1. **Hapus atau edit postingan Threads asli** yang memuat link (atau minta yang memposting menghapusnya). Tanpa postingan itu, balasannya kehilangan konteks dan hasilnya hilang dari Google setelah dirayapi ulang.
-2. Jangan membalas dengan defensif. Kalau perlu satu balasan tenang: "Ini halaman booking personal trainer saya, tidak ada pembayaran di situs. Info: https://xnkbooking.my.id/tentang/".
-3. **Laporkan ringkasan AI**: di hasil pencarian, tekan jempol ke bawah / "Laporkan" pada Ringkasan AI dan jelaskan bahwa situs ini milik personal trainer.
-4. **Cek tanda bahaya sungguhan:** Search Console → Keamanan & tindakan manual, dan https://transparencyreport.google.com/safe-browsing/search (isi `xnkbooking.my.id`).
-5. Setelah halaman `/tentang/` dan `/privasi/` tayang: "Minta pengindeksan" untuk beranda, `/tentang/`, dan `/privasi/`.
-6. Jangan membagikan link situs dengan kalimat ajakan "ada yang pakai tools kayak gini?" di media sosial. Itu mirip pola postingan penipuan. Bagikan dengan kalimat biasa: siapa kamu, di mana melatih, dan link ke halaman kota.
-7. Perbanyak penyebutan asli (profil Google Bisnis, ulasan, Instagram, link dari Wellness Gym). Itu yang membuat ringkasan AI berganti dari "tidak dikenal" menjadi deskripsi yang benar.
+Postinganmu sudah dihapus. Salinan lama di Google baru hilang setelah dirayapi ulang. Percepat dengan langkah ini, berurutan:
+
+1. **Alat "Hapus konten usang" Google** (https://search.google.com/search-console/remove-outdated-content). Masukkan URL Threads yang masih menampilkan teksmu, satu per satu, lalu kirim. Google memeriksa bahwa teksmu sudah tidak ada di halaman itu dan membersihkan cuplikannya. Contoh URL yang kamu temukan:
+   - `https://www.threads.com/@makeupbyaldilaa/post/DXKD1W9mpeY/ini-penipuan-kak-udh-banyak-korbannya-ketikannya-juga-sama-kyk-gt`
+   - `https://www.threads.com/@faizintifada/post/DVw9LdlEvpr/pastiin-kalian-udah-follow-yap`
+   Cari juga URL lain: cari di Google `"xnkbooking.my.id" threads` dan ajukan semuanya yang masih menampilkan teksmu.
+2. **Laporkan ringkasan AI:** tekan jempol ke bawah pada ringkasan itu dan tulis: "Ringkasan ini keliru. xnkbooking.my.id adalah situs booking personal trainer (Coach Jizdan, Purwokerto). Tautan itu muncul di balasan Threads yang tidak berkaitan dengan penipuan."
+3. **Search Console → Inspeksi URL** untuk `https://xnkbooking.my.id/`, `/tentang/`, dan `/privasi/`: klik "Uji URL Langsung", lalu "Minta pengindeksan". Ini membuat Google melihat halaman baru (judul "PT Booking" yang lama akan berganti).
+4. **Cek tanda bahaya sungguhan:** Search Console → Keamanan & tindakan manual (harus kosong), dan https://transparencyreport.google.com/safe-browsing/search (isi `xnkbooking.my.id`). Kalau ada peringatan, kabari Claude dan ajukan "Minta peninjauan".
+5. **Jangan hubungi pemilik postingan yang menulis "penipuan".** Postingannya tidak berkaitan denganmu.
+6. **Ke depannya:** jangan menaruh link situs di balasan thread orang lain, apalagi thread viral. Itu terbaca seperti spam komentar. Pasang link di postinganmu sendiri, dengan kalimat biasa: siapa kamu, di mana melatih, dan link ke halaman kota.
+7. Perbanyak penyebutan asli (profil Google Bisnis, ulasan, Instagram, link dari Wellness Gym). Itu yang membuat ringkasan AI berganti ke deskripsi yang benar.
+
+Perkiraan waktu: permintaan penghapusan cuplikan biasanya diproses dalam beberapa hari; ringkasan AI mengikuti indeks dan bisa lebih lama.

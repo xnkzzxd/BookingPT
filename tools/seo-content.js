@@ -101,4 +101,10 @@ const COACH_SOURCES = [
   { name: 'ANTARA Jateng: Mahasiswa Unsoed Purwokerto raih prestasi Senam Virtual 2023', url: 'https://jateng.antaranews.co/berita/487353/mahaiswa-unsoed-purwokerto-raih-prestasi-senam-virtual-2023' }
 ];
 
-module.exports = { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES };
+// Answers to the question people actually type about the site. Facts only; no mention of any third-party thread.
+const TRUST_FAQ = [
+  ['Apakah xnkbooking.my.id resmi dan aman?', 'Ya. xnkbooking.my.id adalah situs resmi XNK Personal Training milik Coach Jizdan (' + COACH_FULL_NAME + '), personal trainer di Purwokerto dan Banjarnegara. Situs ini hanya untuk melihat paket, jadwal kosong, dan booking sesi latihan. Situs ini tidak memproses pembayaran dan tidak pernah meminta kata sandi, PIN, kode OTP, atau data kartu. Kamu bisa memverifikasi lewat Instagram @jiz.dan, pemberitaan UNSOED dan ANTARA Jateng tentang Coach Jizdan, atau menghubungi coach langsung lewat WhatsApp.'],
+  ['Apakah ada pembayaran lewat situs ini?', 'Tidak. Pembayaran paket dilakukan langsung kepada coach setelah kamu sepakat dengan paketnya. Kalau ada pihak lain meminta transfer atas nama XNK Personal Training, hubungi coach lewat WhatsApp resmi +62 882-2125-4305 sebelum membayar.']
+];
+
+module.exports = { TRUST_FAQ, CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES };

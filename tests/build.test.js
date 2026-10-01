@@ -38,7 +38,7 @@ test('JSON-LD: parses, prices equal the data, FAQ present, no "</script>" breako
   for (const f of ['harga/index.html', 'index.html']) {
     const blocks = jsonLd(out[f]);
     const biz = blocks.find(b => b['@type'] === 'ProfessionalService');
-    if (f === 'index.html') assert.ok(blocks.some(b => b['@type'] === 'FAQPage' && b.mainEntity.length === 5));
+    if (f === 'index.html') assert.ok(blocks.some(b => b['@type'] === 'FAQPage' && b.mainEntity.length === 7));
     const offers = biz.hasOfferCatalog.itemListElement.flatMap(c => c.itemListElement);
     assert.deepEqual(offers.map(o => o.price), ['800000', '1500000']);
     assert.ok(offers.every(o => o.priceCurrency === 'IDR'));
@@ -238,4 +238,21 @@ test('security.txt is valid (RFC 9116 fields, real line breaks) and the business
   assert.ok(!out['.well-known/security.txt'].includes('\\n'));
   const biz = jsonLd(out['index.html']).find(b => b['@type'] === 'ProfessionalService');
   assert.equal(biz.contactPoint.telephone, '+6288221254305');
+});
+
+
+// ── "is it official and safe?" answer ────────────────────────────────────────
+test('trust FAQ: answered on /tentang/ and the home page, same text in FAQPage JSON-LD, facts only', () => {
+  const out = build({ index: INDEX, paket: PAKET, kelas: [], lokasi: {} });
+  for (const f of ['tentang/index.html', 'index.html']) {
+    const h = out[f];
+    const faq = jsonLd(h).find(b => b['@type'] === 'FAQPage');
+    const q = faq.mainEntity.find(x => x.name === 'Apakah xnkbooking.my.id resmi dan aman?');
+    assert.ok(q, f);
+    assert.ok(decode(h).includes(q.acceptedAnswer.text), f + ': answer visible on page');
+    assert.ok(q.acceptedAnswer.text.includes('Yandura Jizdan Hasya Husnayain') && q.acceptedAnswer.text.includes('tidak memproses pembayaran'));
+    assert.ok(!/threads|penipu|scam/i.test(q.acceptedAnswer.text), 'no mention of third-party threads or accusations');
+  }
+  assert.ok(out['llms.txt'].includes('## Verifikasi') && out['llms.txt'].includes('old.unsoed.ac.id'));
+  assert.ok(!/display:\s*none|visibility:\s*hidden/i.test(out['tentang/index.html'].replace(/<style[\s\S]*?<\/style>/g, '')), 'nothing hidden');
 });

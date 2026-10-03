@@ -10,15 +10,15 @@ Data tetap (salin persis):
 - WhatsApp: **+62 882-2125-4305**
 - Situs: **https://xnkbooking.my.id**
 - Instagram: **@jiz.dan**
-- Kota: Purwokerto, Banjarnegara
-- Tempat latihan: **Wellness Gym**, alamat lengkap: ________ (isi, lalu kabari supaya masuk ke situs)
+- Area: Purwokerto, Kabupaten Banyumas (Sokaraja, Baturraden), Banjarnegara. Latihan di gym, ke rumah, dan online.
+- Tempat latihan: **Wellness Gym**, Jl. Jatisari No.24, Karangmiri, Sumampir, Purwokerto Utara, Kabupaten Banyumas 53125
 
 ## 1. Instagram (paling cepat, 5 menit)
 
 Bio (maks. 150 karakter):
 
 ```
-Personal Trainer Purwokerto & Banjarnegara 🏋️ Tatap muka & online | Trial gratis ↓
+PT Gym Purwokerto · Banyumas · Banjarnegara 🏋️ Gym, ke rumah & online | Trial gratis ↓
 ```
 
 Kolom link: `https://xnkbooking.my.id`
@@ -27,24 +27,38 @@ Sorotan (Highlight) yang berguna: Harga, Hasil klien, FAQ, Lokasi. Di setiap cap
 
 ## 2. Google Business Profile (paling berpengaruh untuk pencarian lokal)
 
-Buat di https://business.google.com, **satu profil per kota** kalau kamu punya tempat latihan tetap di kota itu.
-Kalau tidak ada tempat tetap di satu kota, pilih "Bisnis saya mendatangi pelanggan" dan isi area layanan.
+Buat di https://business.google.com. Ini yang paling menentukan muncul di peta Google untuk "pt gym purwokerto", "personal trainer banyumas", "coach gym dekat saya".
+
+**Satu profil saja**, dengan alamat Wellness Gym. Jangan buat profil terpisah untuk Banjarnegara/Sokaraja/Baturraden tanpa tempat tetap: Google bisa menangguhkan profil palsu.
+
+- Alamat: Wellness Gym (alamat di atas). Pastikan titik peta tepat di gym.
+- Centang **"Saya juga melayani pelanggan di lokasi mereka"** (karena kamu datang ke rumah), lalu isi **area layanan**: Purwokerto, Kabupaten Banyumas, Sokaraja, Baturraden, Banjarnegara.
 
 - Kategori utama: **Personal trainer**. Tambahan: Pelatih kebugaran, Pusat kebugaran (kalau cocok).
 - Nama: `XNK Personal Training - Coach Jizdan` (jangan tambah kata kunci lain di nama, itu melanggar aturan Google).
-- Situs web: halaman kota yang sesuai
-  - Purwokerto: `https://xnkbooking.my.id/personal-trainer-purwokerto/`
-  - Banjarnegara: `https://xnkbooking.my.id/personal-trainer-banjarnegara/`
+- Situs web: `https://xnkbooking.my.id/personal-trainer-purwokerto/`
 - Telepon: nomor WhatsApp di atas. Jam buka: sama dengan jam operasional di aplikasi.
 - Deskripsi (750 karakter maks.):
 
 ```
-Personal trainer berbasis sport science di Purwokerto dan Banjarnegara. Coach Jizdan (pendidikan jasmani UNSOED, pelatih pencak silat bersertifikat) mendampingi latihan 1-on-1: fat loss, muscle building, strength & conditioning, dan sports performance. Program disusun dari assessment, progres terukur, harga jelas, dan ada 1 sesi trial gratis. Tersedia juga personal training online.
+Personal trainer (PT gym) berbasis sport science di Purwokerto, Banyumas, dan Banjarnegara. Coach Jizdan (pendidikan jasmani UNSOED, pelatih pencak silat bersertifikat) mendampingi latihan 1-on-1 di Wellness Gym, datang ke rumah di Purwokerto, Sokaraja, Baturraden, dan Banjarnegara, atau online. Program: fat loss, muscle building, strength & conditioning, dan sports performance. Disusun dari assessment, progres terukur, harga jelas, dan ada 1 sesi trial gratis.
 ```
 
 - Foto: foto coach, tempat latihan, sesi latihan (minimal 5). Unggah rutin.
-- Layanan: isi tiap program beserta harga dari https://xnkbooking.my.id/harga/.
-- **Ulasan:** minta klien yang puas menulis ulasan Google (kirim link ulasan lewat WhatsApp setelah paket selesai). Balas semua ulasan.
+- Layanan (masing-masing dengan link halamannya):
+  - Personal training di gym → `/harga/`
+  - Personal training ke rumah → `/personal-trainer-ke-rumah/`
+  - Personal training online → `/personal-trainer-online/`
+  - Program fat loss & diet → `/program/fat-loss/`
+  - Program muscle building → `/program/muscle-building/`
+  - Strength & conditioning → `/program/strength-conditioning/`
+  - Sports performance → `/program/sports-performance/`
+- **Postingan Google** (seminggu sekali): foto sesi + 2–3 kalimat dengan kata yang dicari orang, misalnya: *Sesi PT gym di Wellness Gym Purwokerto hari ini, latihan fat loss untuk pemula.*
+- **Ulasan:** minta klien yang puas menulis ulasan Google (kirim link ulasan lewat WhatsApp setelah paket selesai). Balas semua ulasan. Ulasan yang menyebut kota dan layanan secara alami ("latihan di Purwokerto", "coach datang ke rumah") paling membantu, tapi **jangan mendikte isinya** dan jangan memberi imbalan untuk ulasan (melanggar aturan Google).
+
+  Pesan WhatsApp contoh:
+
+  > Halo kak, terima kasih sudah latihan bareng! Kalau berkenan, boleh bantu tulis ulasan singkat di Google tentang pengalaman latihannya? Ini linknya: ________ . Sangat membantu orang lain yang sedang cari personal trainer. 🙏
 
 ## 3. Profil gratis lain (isi dengan data yang sama)
 
@@ -80,11 +94,25 @@ Tawarkan workshop gratis (misal "dasar latihan beban untuk mahasiswa") ke BEM/UK
 
 Kirim ke media Banyumas/Banjarnegara cerita singkat: mahasiswa UNSOED juara senam, kini jadi personal trainer. ANTARA Jateng sudah pernah memberitakan prestasimu, jadi sebut itu di pesan.
 
+## 4b. Kata kunci untuk caption, postingan, dan bio
+
+Pakai secara alami (1–2 per caption), jangan ditumpuk:
+
+- personal trainer purwokerto · PT gym purwokerto · coach gym purwokerto · pelatih fitness purwokerto
+- personal trainer banyumas · PT gym banyumas · coach gym sokaraja · personal trainer baturraden
+- personal trainer banjarnegara · PT gym banjarnegara
+- personal trainer ke rumah purwokerto · private trainer panggilan
+- program diet purwokerto · fat loss · bentuk otot · latihan beban pemula
+- personal trainer online
+
+Tag lokasi Instagram: Purwokerto, Wellness Gym, Sokaraja, Baturraden, Banjarnegara (sesuai tempat sesi sebenarnya).
+
 ## 5. Setelah profil dibuat
 
 1. Kirim URL profil ke Claude supaya ditambahkan ke data terstruktur (`sameAs`).
-2. Di Search Console: kirim sitemap `https://xnkbooking.my.id/sitemap.xml`, lalu "Minta pengindeksan" untuk halaman beranda, 2 halaman kota, halaman online, dan `/harga/`.
-3. Cek peringkat tiap 2 minggu untuk: "personal trainer purwokerto", "personal trainer banjarnegara", "personal trainer online purwokerto", "personal trainer online banjarnegara". Hasil biasanya butuh beberapa minggu sampai bulan.
+2. Di Search Console: kirim sitemap `https://xnkbooking.my.id/sitemap.xml`, lalu "Minta pengindeksan" untuk beranda, 3 halaman kota (Purwokerto, Banyumas, Banjarnegara), `/personal-trainer-ke-rumah/`, `/personal-trainer-online/`, 4 halaman `/program/…`, dan `/harga/`.
+3. Juga daftarkan situs di **Bing Webmaster Tools** (https://www.bing.com/webmasters, bisa impor dari Search Console). ChatGPT dan Copilot memakai indeks Bing, jadi ini penting untuk muncul di jawaban AI.
+4. Cek peringkat tiap 2 minggu untuk: "personal trainer purwokerto", "pt gym purwokerto", "coach gym purwokerto", "personal trainer banyumas", "pt gym banyumas", "personal trainer banjarnegara", "personal trainer ke rumah purwokerto", "program diet purwokerto". Hasil biasanya butuh beberapa minggu sampai bulan.
 
 ## 6. Kalau Google menampilkan ringkasan AI yang salah ("penipuan")
 

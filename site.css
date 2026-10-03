@@ -94,6 +94,7 @@ ul, ol { padding: 0; list-style: none; }
 }
 .nav.scrolled { background: rgba(236, 236, 236, .82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line); }
 .nav-links { display: flex; gap: 6px; }
+.nav-link { white-space: nowrap; }
 .nav-link {
   position: relative; padding: 10px 14px; text-decoration: none;
   font-size: 14px; font-weight: 600; color: var(--ink-2);
@@ -196,7 +197,7 @@ ul, ol { padding: 0; list-style: none; }
 
 /* ---------- Footer (hitam) ---------- */
 .footer { background: var(--ink); color: #fff; padding: 20px 0 30px; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, .1); }
-.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding-top: 48px; padding-bottom: 40px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-top: 48px; padding-bottom: 40px; }
 .footer-brand p { color: rgba(255, 255, 255, .6); margin-top: 16px; max-width: 36ch; font-size: 14px; }
 .footer-col { display: grid; gap: 10px; align-content: start; justify-items: start; }
 .footer-h { font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: rgba(255, 255, 255, .45); margin-bottom: 4px; }
@@ -231,6 +232,16 @@ ul, ol { padding: 0; list-style: none; }
 .menu-open .m-menu-links a:nth-child(5) { transition-delay: .49s; }
 .menu-open .m-menu-links a:nth-child(6) { transition-delay: .55s; }
 .menu-open .m-menu-links a:nth-child(7) { transition-delay: .61s; }
+.menu-open .m-menu-links a:nth-child(8) { transition-delay: .67s; }
+.menu-open .m-menu-links a:nth-child(9) { transition-delay: .73s; }
+
+/* ---------- Ringkasan (fakta singkat di atas halaman kata kunci) ---------- */
+.facts { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 24px; max-width: 860px; }
+.facts dl { display: grid; gap: 10px; margin: 8px 0 0; }
+.facts dl > div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; }
+.facts dt { font-weight: 800; font-size: 14px; letter-spacing: .04em; }
+.facts dd { margin: 0; color: var(--ink-2); font-size: 15px; overflow-wrap: anywhere; }
+.facts a { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- Beranda: strip + teks di bawah landing ---------- */
 .more-strip { height: 48px; display: flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; }
@@ -268,6 +279,8 @@ ul, ol { padding: 0; list-style: none; }
   .m-menu-links a { font-size: clamp(30px, 8.6vw, 56px); overflow-wrap: anywhere; }
   .step { grid-template-columns: 44px 1fr; padding: 16px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  .facts { padding: 18px; }
+  .facts dl > div { grid-template-columns: 1fr; gap: 2px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 @media (max-width: 480px) {
@@ -279,3 +292,5 @@ ul, ol { padding: 0; list-style: none; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 .lead + .links-row { margin-top: 24px; }
+/* Desktop sempit (1024–1279px): menu lebih rapat supaya tombol "Sudah member?" tetap muat */
+@media (min-width: 1024px) and (max-width: 1279.98px) { .nav { gap: 12px; } .nav-links { gap: 0; } .nav-link { padding: 10px 8px; font-size: 13px; } .nav-link::after { left: 8px; right: 8px; } }

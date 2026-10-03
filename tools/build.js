@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 'use strict';
 // Builds the static, crawlable parts of xnkbooking.my.id from data/*.json:
-//   harga/index.html, kelas/index.html, sitemap.xml, robots.txt, llms.txt,
+//   harga/index.html, kelas/index.html, the keyword pages (cities, ke-rumah, online, program/*),
+//   sitemap.xml, robots.txt, llms.txt, llms-full.txt,
 //   and the JSON-LD + <noscript> summary inside index.html (between the SEO markers).
 // No dependencies. Run: node tools/build.js
 
 const fs = require('fs');
 const path = require('path');
-const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES, TRUST_FAQ } = require('./seo-content.js');
+const { CITIES, WHY, STEPS, PROGRAM_TEXT, ONLINE, HOME, PROGRAM_PAGES, ALIASES, COACH_FULL_NAME, COACH_BIO, COACH_SOURCES, TRUST_FAQ } = require('./seo-content.js');
 
 const ROOT = path.join(__dirname, '..');
 const BASE = 'https://xnkbooking.my.id';
@@ -15,7 +16,16 @@ const BOOK_URL = 'https://book.xnkbooking.my.id/';
 const WA_NUMBER = '6288221254305';
 const NAME = 'XNK Personal Training';
 const COACH = 'Coach Jizdan';
-const AREAS = ['Banjarnegara', 'Purwokerto'];
+const AREAS = ['Purwokerto', 'Banyumas', 'Banjarnegara'];
+// Everywhere the coach trains in person (owner-confirmed): the gym in Purwokerto plus home visits.
+const SERVED = ['Purwokerto', 'Kabupaten Banyumas', 'Sokaraja', 'Baturraden', 'Banjarnegara'];
+function areasText(list, amp) {
+  const l = list || AREAS;
+  return l.length < 2 ? l.join('') : l.slice(0, -1).join(', ') + (amp ? ' &amp; ' : ' dan ') + l[l.length - 1];
+}
+function areaLd(name) {
+  return /^Kabupaten /.test(name) ? { '@type': 'AdministrativeArea', name: name } : { '@type': 'City', name: name };
+}
 
 // Same wording as the FAQ on the landing page (Landing.html in the XNK repo).
 const FAQ = [
@@ -27,6 +37,9 @@ const FAQ = [
 ];
 const INSTAGRAM = 'https://www.instagram.com/jiz.dan/';
 const PROGRAMS = ['Fat Loss', 'Muscle Building', 'Strength & Conditioning', 'Sports Performance'];
+const PROGRAM_SLUG = {};
+Object.keys(PROGRAM_PAGES).forEach(k => { PROGRAM_SLUG[PROGRAM_PAGES[k].name] = k; });
+const KEYWORDS = 'personal trainer, PT gym, coach gym, pelatih gym, pelatih fitness, private trainer, personal trainer ke rumah, fat loss, diet, muscle building, strength and conditioning, ' + SERVED.join(', ');
 
 // The real XNK mark (traced by tools/trace-logo.js) and the full icon/manifest head, shared by every page.
 const MARK = JSON.parse(fs.readFileSync(path.join(ROOT, 'brand', 'mark.json'), 'utf8'));
@@ -119,20 +132,22 @@ function businessLd(paket, kelas, lokasi) {
     '@context': 'https://schema.org', '@type': 'ProfessionalService', '@id': BASE + '/#business',
     name: NAME, alternateName: COACH + ' · Personal Trainer', url: BASE + '/',
     image: [BASE + '/img/og.jpg', BASE + '/logo-512.png'], logo: { '@type': 'ImageObject', '@id': BASE + '/#logo', url: BASE + '/logo-512.png', contentUrl: BASE + '/logo-512.png', width: 512, height: 512, caption: NAME }, telephone: '+' + WA_NUMBER,
-    description: 'Personal trainer berbasis sport science di Banjarnegara & Purwokerto: fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.',
-    areaServed: AREAS.map(a => ({ '@type': 'City', name: a })), inLanguage: 'id', priceRange: 'Rp',
+    description: 'Personal trainer (PT gym, coach gym) berbasis sport science di Purwokerto, Banyumas & Banjarnegara: latihan di gym, ke rumah, atau online. Fat loss, muscle building, strength & conditioning, sports performance. 1 sesi trial gratis.',
+    areaServed: SERVED.map(areaLd), inLanguage: 'id', priceRange: 'Rp', keywords: KEYWORDS,
     founder: {
       '@type': 'Person', '@id': BASE + '/#coach', name: COACH, legalName: COACH_FULL_NAME, alternateName: [COACH, 'Jizdan'], jobTitle: 'Personal Trainer',
-      knowsAbout: PROGRAMS.concat(['Personal training', 'Pencak silat', 'Pendidikan jasmani']), sameAs: [INSTAGRAM],
+      knowsAbout: PROGRAMS.concat(['Personal training', 'Latihan beban', 'Penurunan berat badan', 'Pencak silat', 'Pendidikan jasmani']), sameAs: [INSTAGRAM],
       alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universitas Jenderal Soedirman', sameAs: 'https://www.unsoed.ac.id/' },
       award: 'Juara 2 Senam Virtual UMPP 2023, kategori grup putra (aerobik lagu bebas)',
       subjectOf: COACH_SOURCES.map(x => ({ '@type': 'WebPage', name: x.name, url: x.url }))
     },
-    makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n } })),
+    makesOffer: PROGRAMS.map(n => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n, url: BASE + '/program/' + PROGRAM_SLUG[n] + '/' } }))
+      .concat([{ '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Personal training ke rumah', url: BASE + '/' + HOME.slug + '/' } },
+        { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Personal training online', url: BASE + '/' + ONLINE.slug + '/' } }]),
     sameAs: [INSTAGRAM], knowsLanguage: 'id',
     contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', telephone: '+' + WA_NUMBER, availableLanguage: 'id', areaServed: 'ID' }
   };
-  const places = Object.keys(CITIES).map(k => placeLd(k, lokasi && lokasi[k])).filter(Boolean);
+  const places = Object.keys(CITIES).filter(k => !CITIES[k].lokasiKey).map(k => placeLd(k, lokasi && lokasi[k])).filter(Boolean);
   if (places.length) biz.location = places;
   if (paket.packages.length) {
     biz.hasOfferCatalog = {
@@ -160,6 +175,14 @@ function breadcrumbLd(label, url) {
     itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Beranda', item: BASE + '/' }, { '@type': 'ListItem', position: 2, name: label, item: url }]
   };
 }
+// WebPage with dateModified from the price data (not the build date), so a rebuild with no change is identical.
+let MODIFIED = null;   // set by build()
+function webPageLd(o) {
+  const w = { '@context': 'https://schema.org', '@type': 'WebPage', '@id': o.url + '#webpage', url: o.url, name: o.title, description: o.description, inLanguage: 'id',
+    isPartOf: { '@id': BASE + '/#website' }, about: { '@id': BASE + '/#business' } };
+  if (MODIFIED) w.dateModified = MODIFIED;
+  return w;
+}
 
 // ── pages ────────────────────────────────────────────────────────────────────
 
@@ -170,6 +193,7 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 function navItems(o) {
   const items = [['/', 'Beranda', ''], ['/harga/', 'Harga', 'harga']];
   Object.keys(CITIES).forEach(k => items.push(['/' + CITIES[k].slug + '/', CITIES[k].nama, k]));
+  items.push(['/' + HOME.slug + '/', 'Ke rumah', 'rumah']);
   items.push(['/' + ONLINE.slug + '/', 'Online', 'online']);
   if (o.showKelas) items.push(['/kelas/', 'Kelas', 'kelas']);
   items.push(['/harga/#faq', 'FAQ', '']);
@@ -179,7 +203,7 @@ function navItems(o) {
 // Same look as the landing (LandingStyle.html in the XNK repo): fixed nav, full-screen black menu on phones, black footer.
 function page(o) {
   const items = navItems(o);
-  const links = items.map(i => '<a class="nav-link"' + (o.current && o.current === i[2] ? ' aria-current="page"' : '') + ' href="' + i[0] + '">' + i[1] + '</a>').join('');
+  const links = items.filter(i => i[0] !== '/').map(i => '<a class="nav-link"' + (o.current && o.current === i[2] ? ' aria-current="page"' : '') + ' href="' + i[0] + '">' + i[1] + '</a>').join('');
   const mlinks = items.map((i, n) => '<a href="' + i[0] + '"><small>0' + (n + 1) + '</small>' + i[1] + '</a>').join('');
   const wa = waLink('Halo Coach Jizdan, saya mau tanya program personal training.');
   return '<!DOCTYPE html>\n<html lang="id">\n<head>\n<meta charset="UTF-8">\n' +
@@ -197,7 +221,7 @@ function page(o) {
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
     '<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">\n' +
     '<link rel="stylesheet" href="/site.css">\n' +
-    o.ld.map(ld).join('\n') + '\n</head>\n<body>\n' +
+    o.ld.concat(o.index ? [webPageLd(o)] : []).map(ld).join('\n') + '\n</head>\n<body>\n' +
     '<header class="nav" id="nav"><a class="logo" href="/" aria-label="XNK, beranda">' + LOGO_MARK + '<span class="logo-word">XNK</span></a>' +
     '<nav class="nav-links" aria-label="Menu">' + links + '</nav>' +
     '<a class="btn btn-dark btn-sm nav-cta" href="' + BOOK_URL + '">Sudah member?' + ARROW + '</a>' +
@@ -207,8 +231,9 @@ function page(o) {
     '<main>\n' + o.body + '\n</main>\n' +
     '<footer class="footer"><div class="wrap footer-grid">' +
     '<div class="footer-brand"><span class="logo"><span class="logo-mark logo-mark-light">' + markSvg('#0B0B0B') + '</span><span class="logo-word">XNK</span></span>' +
-    '<p>Personal training berbasis sport science bersama ' + COACH + ' di ' + AREAS.join(' &amp; ') + '.</p></div>' +
+    '<p>Personal training (PT gym) berbasis sport science bersama ' + COACH + ' di ' + areasText(AREAS, true) + ': di gym, ke rumah, atau online.</p></div>' +
     '<div class="footer-col"><p class="footer-h">Menu</p>' + items.map(i => '<a href="' + i[0] + '">' + i[1] + '</a>').join('') + '</div>' +
+    '<div class="footer-col"><p class="footer-h">Program</p>' + Object.keys(PROGRAM_PAGES).map(k => '<a href="/program/' + k + '/">' + esc(PROGRAM_PAGES[k].name) + '</a>').join('') + '</div>' +
     '<div class="footer-col"><p class="footer-h">Kontak</p><a href="' + BOOK_URL + '">Booking &amp; login klien</a><a href="' + wa + '" rel="noopener">WhatsApp</a><a href="/tentang/">Tentang</a><a href="/privasi/">Kebijakan privasi</a></div></div>' +
     '<div class="footer-giant" aria-hidden="true">XNK</div><p class="wrap footer-copy">&copy; 2026 XNK Personal Training. All rights reserved.</p></footer>\n' +
     '<script>(function(){var b=document.getElementById("burger"),n=document.getElementById("nav"),m=document.getElementById("m-menu");' +
@@ -246,15 +271,15 @@ function buildHarga(paket, kelas) {
   const body =
     '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Harga &amp; Paket</p>' +
     '<h1 class="h2">Investasi untuk dirimu</h1>' +
-    '<p class="lead">Harga personal training di Banjarnegara &amp; Purwokerto. Semua paket termasuk sesi 1-on-1 dengan ' + COACH + ', program personal berbasis sport science, dan 1 sesi trial gratis untuk calon klien baru.' + (has ? ' Mulai dari ' + rupiah(low) + '.' : '') + '</p>' +
+    '<p class="lead">Harga personal trainer (PT gym) di Purwokerto, Banyumas &amp; Banjarnegara: di gym, ke rumah, atau online. Semua paket termasuk sesi 1-on-1 dengan ' + COACH + ', program personal berbasis sport science, dan 1 sesi trial gratis untuk calon klien baru.' + (has ? ' Mulai dari ' + rupiah(low) + '.' : '') + '</p>' +
     '<div class="hero-actions"><a class="btn btn-dark" href="' + BOOK_URL + '">Mulai Sekarang' + ARROW + '</a><a class="btn btn-line" href="' + waLink('Halo Coach Jizdan, saya mau konsultasi paket personal training.') + '" rel="noopener">Konsultasi gratis</a></div></div></section>' +
     '<section class="sec sec-paket" id="paket"><div class="wrap"><div class="sec-head-row"><div><p class="eyebrow">Pilih Paket</p><h2 class="h2">Paket &amp; harga</h2></div>' + seg + '</div>' + cats +
     (paket.updatedAt ? '<p class="note">Harga diperbarui ' + esc(String(paket.updatedAt).slice(0, 10)) + '.</p>' : '') + '</div></section>' +
     '<section class="sec sec-faq" id="faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan Umum</p><h2 class="h2">FAQ</h2><p class="lead">Belum terjawab? Tanya langsung ke coach lewat WhatsApp.</p></div>' +
     '<div class="faq-list">' + FAQ.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a) + '</p></details>').join('') + '</div></div></section>';
   return page({
-    title: 'Harga Personal Training Banjarnegara & Purwokerto · ' + NAME,
-    description: 'Daftar harga paket personal training ' + COACH + ' di Banjarnegara & Purwokerto' + (has ? ', mulai ' + rupiah(low) : '') + '. Termasuk 1 sesi trial gratis.',
+    title: 'Harga Personal Trainer & PT Gym Purwokerto, Banyumas · XNK',
+    description: 'Daftar harga paket personal trainer (PT gym) ' + COACH + ' di Purwokerto, Banyumas & Banjarnegara' + (has ? ', mulai ' + rupiah(low) : '') + '. Termasuk 1 sesi trial gratis.',
     url: BASE + '/harga/', index: has, current: 'harga', showKelas: kelas.length > 0, body,
     ld: [businessLd(paket, kelas), breadcrumbLd('Harga', BASE + '/harga/'), faqLd()]
   });
@@ -286,7 +311,7 @@ function buildKelas(paket, kelas) {
   }] : [];
   return page({
     title: 'Kelas Latihan ' + COACH + ' · ' + NAME,
-    description: 'Jadwal dan harga kelas latihan ' + COACH + ' di Banjarnegara & Purwokerto.',
+    description: 'Jadwal dan harga kelas latihan ' + COACH + ' di ' + areasText(AREAS) + '.',
     url: BASE + '/kelas/', index: has, current: 'kelas', showKelas: has, body,
     ld: [breadcrumbLd('Kelas', BASE + '/kelas/')].concat(ldList)
   });
@@ -298,24 +323,50 @@ function buildKelas(paket, kelas) {
 function lowPrice(paket) {
   return paket.packages.length ? rupiah(Math.min.apply(null, paket.packages.map(p => Number(p.harga)))) : '';
 }
+// Shared facts for keyword-page copy. The gym comes from data/lokasi.json; without it the copy stays neutral.
+function pageCtx(paket) {
+  const l = LOKASI.purwokerto || {};
+  return {
+    low: lowPrice(paket),
+    gym: l.nama || 'gym di Purwokerto',
+    alamatGym: l.alamat ? (l.nama ? l.nama + ', ' : '') + l.alamat : 'gym di Purwokerto (alamat dikonfirmasi lewat WhatsApp)'
+  };
+}
+function fill(text, ctx) {
+  return String(text).replace(/\{gym\}/g, ctx.gym).replace(/\{alamatGym\}/g, ctx.alamatGym);
+}
 function faqHtml(items, ctx) {
-  return items.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(a(ctx)) + '</p></details>').join('');
+  return items.map(([q, a]) => '<details class="faq-item"><summary class="faq-q">' + esc(q) + '<span class="faq-icon" aria-hidden="true"></span></summary><p class="faq-a">' + esc(fill(a(ctx), ctx)) + '</p></details>').join('');
 }
 function faqLdOf(items, ctx) {
   return { '@context': 'https://schema.org', '@type': 'FAQPage',
-    mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a(ctx) } })) };
+    mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: fill(a(ctx), ctx) } })) };
+}
+// Answer-first fact box at the top of a keyword page: short lines that search and AI answers can quote as-is.
+function summaryBox(lines) {
+  return '<section class="sec sec-paket"><div class="wrap"><div class="facts"><p class="eyebrow">Ringkasan</p><dl>' +
+    lines.map(([k, v]) => '<div><dt>' + esc(k) + '</dt><dd>' + v + '</dd></div>').join('') + '</dl></div></div></section>';
+}
+function summaryLines(ctx, where) {
+  return [
+    ['Siapa', 'Coach Jizdan (' + esc(COACH_FULL_NAME) + '), personal trainer, guru pendidikan jasmani, dan pelatih pencak silat bersertifikat.'],
+    ['Di mana', where],
+    ['Harga', (ctx.low ? 'Mulai dari ' + esc(ctx.low) + '. ' : '') + '<a href="/harga/">Lihat semua paket</a>.'],
+    ['Trial', '1 sesi trial gratis untuk calon klien baru.'],
+    ['Booking', '<a href="' + BOOK_URL + '">book.xnkbooking.my.id</a> atau WhatsApp +62 882-2125-4305.']
+  ];
 }
 function serviceLd(name, url, cities, paket) {
   const svc = { '@context': 'https://schema.org', '@type': 'Service', '@id': url + '#service', name: name, serviceType: 'Personal training', url: url,
-    provider: { '@id': BASE + '/#business' }, areaServed: cities.map(c => ({ '@type': 'City', name: c })), inLanguage: 'id' };
+    provider: { '@id': BASE + '/#business' }, areaServed: cities.map(areaLd), inLanguage: 'id' };
   if (paket.packages.length) {
     const prices = paket.packages.map(p => Number(p.harga));
     svc.offers = { '@type': 'AggregateOffer', priceCurrency: 'IDR', lowPrice: String(Math.min.apply(null, prices)), highPrice: String(Math.max.apply(null, prices)), offerCount: String(prices.length), url: BASE + '/harga/' };
   }
   return svc;
 }
-function programList() {
-  return '<div class="prog-grid">' + PROGRAMS.map(n => '<div class="prog"><h3>' + esc(n) + '</h3><p>' + esc(PROGRAM_TEXT[n] || '') + '</p></div>').join('') + '</div>';
+function programList(skip) {
+  return '<div class="prog-grid">' + PROGRAMS.filter(n => n !== skip).map(n => '<div class="prog"><h3><a href="/program/' + PROGRAM_SLUG[n] + '/">' + esc(n) + '</a></h3><p>' + esc(PROGRAM_TEXT[n] || '') + '</p></div>').join('') + '</div>';
 }
 function stepList(steps) {
   return '<ol class="steps">' + steps.map((st, i) => '<li class="step"><span class="step-no">0' + (i + 1) + '</span><div><h3>' + esc(st[0]) + '</h3><p>' + esc(st[1]) + '</p></div></li>').join('') + '</ol>';
@@ -328,28 +379,34 @@ function ctaBand(text) {
     '<a class="btn btn-ghost" href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>';
 }
 function coachBlock() {
-  return '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Tentang coach</p><h2 class="h2 h2-sm">Coach Jizdan, personal trainer Purwokerto &amp; Banjarnegara</h2>' +
+  return '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Tentang coach</p><h2 class="h2 h2-sm">Coach Jizdan, personal trainer ' + areasText(AREAS, true) + '</h2>' +
     '<div class="prose">' + COACH_BIO.map(t => '<p>' + esc(t) + '</p>').join('') + '</div>' +
     '<p class="sources">Sumber: ' + COACH_SOURCES.map(x => '<a href="' + x.url + '" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p></div></section>';
 }
 function otherLinks(currentKey) {
   const links = Object.keys(CITIES).filter(k => k !== currentKey).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>');
+  if (currentKey !== 'rumah') links.push('<a href="/' + HOME.slug + '/">Personal trainer ke rumah</a>');
   if (currentKey !== 'online') links.push('<a href="/' + ONLINE.slug + '/">Personal trainer online</a>');
   links.push('<a href="/harga/">Harga &amp; paket</a>');
   return '<p class="links-row">' + links.join('') + '</p>';
 }
 
 function buildCity(key, paket, kelas) {
-  const c = CITIES[key], l = LOKASI[key] || {};
+  const c = CITIES[key], l = LOKASI[c.lokasiKey || key] || {};
   const url = BASE + '/' + c.slug + '/';
-  const ctx = { low: lowPrice(paket) };
+  const ctx = pageCtx(paket);
+  const where = l.alamat ? 'Tatap muka di ' + esc(l.nama || l.alamat) + ' atau ke rumahmu (' + esc(c.served ? areasText(c.served) : c.nama) + '), dan online.'
+    : 'Ke rumah atau tempat latihan pilihanmu di ' + esc(c.nama) + ', dan online. Lokasi diatur lewat WhatsApp.';
+  const areaBlock = c.areas ? '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Area</p><h2 class="h2 h2-sm">PT gym dan personal trainer di seluruh ' + esc(c.nama) + '</h2><div class="prog-grid">' +
+    c.areas.map(a => '<div class="prog"><h3>' + esc(a[0]) + '</h3><p>' + esc(fill(a[1], ctx)) + '</p></div>').join('') + '</div></div></section>' : '';
   const place = l.alamat ? '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lokasi latihan</p><h2 class="h2">Latihan di ' + esc(c.nama) + '</h2><p class="lead">' +
     (l.nama ? '<b>' + esc(l.nama) + '</b><br>' : '') + esc(l.alamat) + (l.kodePos ? ' ' + esc(l.kodePos) : '') + '</p>' +
     (l.maps ? '<div class="hero-actions"><a class="btn btn-line" href="' + esc(l.maps) + '" rel="noopener">Buka di Google Maps' + ARROW + '</a></div>' : '') + '</div></section>' : '';
   const body =
-    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">' + esc(c.nama) + ' · Jawa Tengah</p><h1 class="h2">' + esc(c.h1) + '</h1>' +
-    '<p class="lead">' + esc(c.lead) + '</p>' +
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">' + esc(c.eyebrow || c.nama + ' · Jawa Tengah') + '</p><h1 class="h2">' + esc(c.h1) + '</h1>' +
+    '<p class="lead">' + esc(fill(c.lead, ctx)) + ' ' + esc(ALIASES) + '</p>' +
     '<div class="hero-actions"><a class="btn btn-dark" href="' + BOOK_URL + '">Booking trial gratis' + ARROW + '</a><a class="btn btn-line" href="' + waLink('Halo Coach Jizdan, saya mau tanya personal training di ' + c.nama + '.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>' +
+    summaryBox(summaryLines(ctx, where)) + areaBlock +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Keunggulan</p><h2 class="h2 h2-sm">' + esc(c.whyTitle) + '</h2>' + checkList(WHY) + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program personal training di ' + esc(c.nama) + '</h2>' + programList() + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
@@ -361,31 +418,76 @@ function buildCity(key, paket, kelas) {
     ctaBand('Mulai latihan di ' + esc(c.nama));
   return page({
     title: c.title, description: c.description, url: url, index: true, current: key, showKelas: kelas.length > 0, body: body,
-    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer ' + c.nama, url, [c.nama], paket), faqLdOf(c.faq, ctx), breadcrumbLd('Personal Trainer ' + c.nama, url)]
+    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer ' + c.nama, url, c.served || [c.nama], paket), faqLdOf(c.faq, ctx), breadcrumbLd('Personal Trainer ' + c.nama, url)]
   });
 }
 
 function buildOnline(paket, kelas) {
   const url = BASE + '/' + ONLINE.slug + '/';
-  const ctx = { low: lowPrice(paket) };
+  const ctx = pageCtx(paket);
   const cityBlocks = Object.keys(CITIES).map(k => '<div class="prog"><h3>Personal trainer online ' + esc(CITIES[k].nama) + '</h3><p>Kamu di ' + esc(CITIES[k].nama) +
     ' bisa berlatih online bersama Coach Jizdan tanpa harus datang langsung. Mau tatap muka? Lihat juga <a href="/' + CITIES[k].slug + '/">personal trainer ' + esc(CITIES[k].nama) + '</a>.</p></div>').join('');
   const body =
     '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Online · Seluruh Indonesia</p><h1 class="h2">' + esc(ONLINE.h1) + '</h1><p class="lead">' + esc(ONLINE.lead) + '</p>' +
     '<div class="hero-actions"><a class="btn btn-dark" href="' + waLink('Halo Coach Jizdan, saya tertarik personal training online.') + '" rel="noopener">Konsultasi online gratis' + ARROW + '</a><a class="btn btn-line" href="' + BOOK_URL + '">Booking trial</a></div></div></section>' +
+    summaryBox(summaryLines(ctx, 'Online dari mana saja di Indonesia, lewat video. Mau tatap muka? Ada sesi di ' + esc(areasText(AREAS)) + '.')) +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Untuk siapa</p><h2 class="h2 h2-sm">Cocok kalau kamu</h2>' + checkList(ONLINE.forWho) + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Bagaimana latihan online berjalan</h2>' + stepList(ONLINE.how) + '</div></section>' +
-    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Kota</p><h2 class="h2 h2-sm">Online dari Purwokerto dan Banjarnegara</h2><div class="prog-grid">' + cityBlocks + '</div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Kota</p><h2 class="h2 h2-sm">Online dari ' + areasText(AREAS) + '</h2><div class="prog-grid">' + cityBlocks + '</div></div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program yang bisa dijalani online</h2>' + programList() + '</div></section>' + coachBlock() +
     '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ online</h2></div><div class="faq-list">' + faqHtml(ONLINE.faq, ctx) + '</div></div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lihat juga</p>' + otherLinks('online') + '</div></section>' +
     ctaBand('Mulai latihan online');
   return page({
     title: ONLINE.title, description: ONLINE.description, url: url, index: true, current: 'online', showKelas: kelas.length > 0, body: body,
-    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer Online', url, ['Purwokerto', 'Banjarnegara', 'Indonesia'], paket), faqLdOf(ONLINE.faq, ctx), breadcrumbLd('Personal Trainer Online', url)]
+    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer Online', url, AREAS.concat(['Indonesia']), paket), faqLdOf(ONLINE.faq, ctx), breadcrumbLd('Personal Trainer Online', url)]
   });
 }
 
+
+function buildHome(paket, kelas) {
+  const url = BASE + '/' + HOME.slug + '/';
+  const ctx = pageCtx(paket);
+  const wa = waLink('Halo Coach Jizdan, saya mau tanya personal training ke rumah. Lokasi saya di ');
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Home visit · ' + esc(areasText(HOME.areas)) + '</p><h1 class="h2">' + esc(HOME.h1) + '</h1><p class="lead">' + esc(HOME.lead) + ' ' + esc(ALIASES) + '</p>' +
+    '<div class="hero-actions"><a class="btn btn-dark" href="' + wa + '" rel="noopener">Tanya area &amp; jadwal' + ARROW + '</a><a class="btn btn-line" href="' + BOOK_URL + '">Booking trial gratis</a></div></div></section>' +
+    summaryBox(summaryLines(ctx, 'Coach datang ke rumahmu di ' + esc(areasText(HOME.areas)) + '. Atau latihan di ' + esc(ctx.gym) + '.')) +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Untuk siapa</p><h2 class="h2 h2-sm">Cocok kalau kamu</h2>' + checkList(HOME.forWho) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Bagaimana personal training di rumah berjalan</h2>' + stepList(HOME.how) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Area</p><h2 class="h2 h2-sm">Area private trainer panggilan</h2><p class="lead">' + esc(areasText(HOME.areas)) +
+    '. Di luar area ini? Tanyakan lewat WhatsApp, atau pilih <a href="/' + ONLINE.slug + '/">personal trainer online</a>.</p>' + otherLinks('rumah') + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Program yang bisa dijalani di rumah</h2>' + programList() + '</div></section>' + coachBlock() +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ ke rumah</h2></div><div class="faq-list">' + faqHtml(HOME.faq, ctx) + '</div></div></section>' +
+    ctaBand('Latihan di rumah bersama Coach Jizdan');
+  return page({
+    title: HOME.title, description: HOME.description, url: url, index: true, current: 'rumah', showKelas: kelas.length > 0, body: body,
+    ld: [businessLd(paket, kelas), serviceLd('Personal Trainer ke Rumah', url, HOME.areas, paket), faqLdOf(HOME.faq, ctx), breadcrumbLd('Personal Trainer ke Rumah', url)]
+  });
+}
+
+function buildProgram(key, paket, kelas) {
+  const pg = Object.assign({}, PROGRAM_PAGES[key]);
+  pg.faq = pg.faq.concat([['Apakah ada sesi trial gratis untuk program ' + pg.name + '?', () => 'Ada. Calon klien baru mendapat 1 sesi trial gratis untuk merasakan latihan bersama coach sebelum memilih paket.']]);
+  const url = BASE + '/program/' + key + '/';
+  const ctx = pageCtx(paket);
+  const body =
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Program · ' + esc(areasText(AREAS)) + ' · Online</p><h1 class="h2">' + esc(pg.h1) + '</h1><p class="lead">' + esc(pg.lead) + '</p>' +
+    '<div class="hero-actions"><a class="btn btn-dark" href="' + BOOK_URL + '">Booking trial gratis' + ARROW + '</a><a class="btn btn-line" href="' + waLink('Halo Coach Jizdan, saya tertarik program ' + pg.name + '.') + '" rel="noopener">Tanya via WhatsApp</a></div></div></section>' +
+    summaryBox(summaryLines(ctx, 'Di ' + esc(ctx.gym) + ', ke rumahmu (' + esc(areasText(SERVED)) + '), atau online.')) +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Untuk siapa</p><h2 class="h2 h2-sm">Program ' + esc(pg.name) + ' cocok kalau</h2>' + checkList(pg.forWho) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Isi program</p><h2 class="h2 h2-sm">Yang kamu dapat</h2>' + checkList(pg.contains) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
+    coachBlock() +
+    '<section class="sec sec-faq"><div class="wrap faq-grid"><div><p class="eyebrow">Pertanyaan umum</p><h2 class="h2">FAQ ' + esc(pg.name) + '</h2></div><div class="faq-list">' + faqHtml(pg.faq, ctx) + '</div></div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program lain</p>' + programList(pg.name) + '</div></section>' +
+    '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Lokasi</p>' + otherLinks('program') + '</div></section>' +
+    ctaBand('Mulai program ' + esc(pg.name));
+  return page({
+    title: pg.title, description: pg.description, url: url, index: true, current: 'program-' + key, showKelas: kelas.length > 0, body: body,
+    ld: [businessLd(paket, kelas), serviceLd('Program ' + pg.name, url, SERVED, paket), faqLdOf(pg.faq, ctx), breadcrumbLd('Program ' + pg.name, url)]
+  });
+}
 
 // ── trust pages: /tentang/ and /privasi/ ─────────────────────────────────────
 
@@ -402,7 +504,8 @@ function buildTentang(paket, kelas) {
   const l = LOKASI.purwokerto || {};
   const where = '<div class="prose">' +
     (l.alamat ? '<p><b>Purwokerto:</b> ' + (l.nama ? esc(l.nama) + ', ' : '') + esc(l.alamat) + (l.kodePos ? ' ' + esc(l.kodePos) : '') + '.' + (l.maps ? ' <a href="' + esc(l.maps) + '" rel="noopener">Buka di Google Maps</a>.' : '') + '</p>' : '<p><b>Purwokerto:</b> hubungi coach untuk lokasi latihan.</p>') +
-    '<p><b>Banjarnegara:</b> layanan berupa area layanan (tanpa alamat tetap). Hubungi coach lewat WhatsApp untuk mengatur lokasi dan jadwal.</p></div>';
+    '<p><b>Banjarnegara:</b> layanan berupa area layanan (tanpa alamat tetap). Hubungi coach lewat WhatsApp untuk mengatur lokasi dan jadwal.</p>' +
+    '<p><b>Ke rumah:</b> coach juga datang ke rumah di ' + esc(areasText(HOME.areas)) + '. <a href="/' + HOME.slug + '/">Personal trainer ke rumah</a>.</p></div>';
   const body =
     '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Tentang</p><h1 class="h2">Tentang Coach Jizdan &amp; XNK Personal Training</h1>' +
     '<p class="lead">Halaman ini menjelaskan siapa di balik xnkbooking.my.id, di mana kami melatih, bagaimana pembayaran bekerja, dan apa yang tidak pernah kami minta darimu.</p></div></section>' +
@@ -419,7 +522,7 @@ function buildTentang(paket, kelas) {
     '<p class="sources">Lihat juga <a href="/privasi/">kebijakan privasi</a>. Menemukan sesuatu yang mencurigakan atas nama kami? Beri tahu lewat WhatsApp di atas.</p></div></section>' +
     ctaBand('Ada pertanyaan? Tanya langsung');
   return page({
-    title: 'Tentang Coach Jizdan & XNK Personal Training', description: 'Siapa di balik xnkbooking.my.id: Coach Jizdan, personal trainer di Purwokerto dan Banjarnegara. Lokasi, kontak, cara pembayaran, dan yang tidak pernah kami minta.',
+    title: 'Tentang Coach Jizdan & XNK Personal Training', description: 'Siapa di balik xnkbooking.my.id: Coach Jizdan, personal trainer di Purwokerto, Banyumas, dan Banjarnegara. Lokasi, kontak, cara pembayaran, dan yang tidak pernah kami minta.',
     url: url, index: true, current: 'tentang', showKelas: kelas.length > 0, body: body,
     ld: [businessLd(paket, kelas), { '@context': 'https://schema.org', '@type': 'AboutPage', url: url, name: 'Tentang XNK Personal Training', about: { '@id': BASE + '/#business' }, inLanguage: 'id' }, faqLd(TRUST_FAQ), breadcrumbLd('Tentang', url)]
   });
@@ -466,10 +569,10 @@ function seoHead(paket, kelas) {
 function seoBody(paket, kelas) {
   const li = paket.packages.slice(0, 12).map(p => '<li>' + esc(p.namaPaket) + ': ' + rupiah(p.harga) + (p.jumlahSesi ? ' (' + p.jumlahSesi + ' sesi)' : '') + '</li>').join('');
   return '<noscript><div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;line-height:1.6">' +
-    '<p><strong>' + COACH + ' · Personal Trainer ' + AREAS.join(' &amp; ') + '</strong></p>' +
+    '<p><strong>' + COACH + ' · Personal Trainer ' + areasText(AREAS, true) + '</strong></p>' +
     '<p>Personal training berbasis sport science: ' + PROGRAMS.map(esc).join(', ') + '. 1 sesi trial gratis.</p>' +
     (li ? '<h2>Paket</h2><ul>' + li + '</ul>' : '') +
-    '<p>' + Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join(' · ') + ' · <a href="/' + ONLINE.slug + '/">Personal trainer online</a></p>' +
+    '<p>' + Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join(' · ') + ' · <a href="/' + HOME.slug + '/">Personal trainer ke rumah</a> · <a href="/' + ONLINE.slug + '/">Personal trainer online</a></p>' +
     '<p><a href="/harga/">Lihat semua harga</a>' + (kelas.length ? ' · <a href="/kelas/">Kelas</a>' : '') + ' · <a href="' + BOOK_URL + '">Booking</a> · <a href="' + waLink('Halo Coach Jizdan, saya mau tanya program personal training.') + '">WhatsApp</a></p>' +
     '</div></noscript>';
 }
@@ -478,15 +581,16 @@ function seoBody(paket, kelas) {
 // Visible section under the landing iframe on the home page: real text, same facts as the landing. Never hidden.
 const SEO_MAIN = ['<!--SEO-MAIN:START-->', '<!--SEO-MAIN:END-->'];
 function seoMain(paket, kelas) {
-  const ctx = { low: lowPrice(paket) };
+  const ctx = pageCtx(paket);
   const cityLinks = Object.keys(CITIES).map(k => '<a href="/' + CITIES[k].slug + '/">Personal trainer ' + CITIES[k].nama + '</a>').join('') +
-    '<a href="/' + ONLINE.slug + '/">Personal trainer online</a><a href="/harga/">Harga &amp; paket</a>';
-  return '<div class="more-strip"><a href="#info">Personal trainer Purwokerto · Banjarnegara · Online <span aria-hidden="true">↓</span></a></div>\n' +
+    '<a href="/' + HOME.slug + '/">Personal trainer ke rumah</a><a href="/' + ONLINE.slug + '/">Personal trainer online</a><a href="/harga/">Harga &amp; paket</a>';
+  return '<div class="more-strip"><a href="#info">Personal trainer Purwokerto · Banyumas · Banjarnegara <span aria-hidden="true">↓</span></a></div>\n' +
     '<main id="info" class="home-info">' +
-    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Banjarnegara &amp; Purwokerto</p><h1 class="h2">Personal Trainer Purwokerto &amp; Banjarnegara</h1>' +
-    '<p class="lead">Coach Jizdan mendampingi latihan 1-on-1 berbasis sport science, tatap muka di Purwokerto dan Banjarnegara maupun online. Fat loss, muscle building, strength &amp; conditioning, dan sports performance.' + (ctx.low ? ' Paket mulai dari ' + ctx.low + '.' : '') + ' Ada 1 sesi trial gratis.</p>' +
+    '<section class="sec sec-hero"><div class="wrap"><p class="eyebrow">Purwokerto, Banyumas &amp; Banjarnegara</p><h1 class="h2">Personal Trainer Purwokerto &amp; Banjarnegara</h1>' +
+    '<p class="lead">Coach Jizdan mendampingi latihan 1-on-1 berbasis sport science: di ' + esc(ctx.gym) + ', datang ke rumahmu di Purwokerto, Sokaraja, Baturraden, Banyumas, dan Banjarnegara, maupun online. Fat loss, muscle building, strength &amp; conditioning, dan sports performance.' + (ctx.low ? ' Paket mulai dari ' + ctx.low + '.' : '') + ' Ada 1 sesi trial gratis. ' + esc(ALIASES) + '</p>' +
     '<p class="links-row">' + cityLinks + '</p>' +
     '<p class="trust-strip"><b>Resmi dan aman:</b> tidak ada pembayaran lewat situs ini dan kami tidak pernah meminta kata sandi atau OTP. <a href="/tentang/">Tentang kami</a> · <a href="/privasi/">Kebijakan privasi</a> · <a href="' + INSTAGRAM + '" rel="noopener">Instagram @jiz.dan</a></p></div></section>' +
+    summaryBox(summaryLines(ctx, 'Di ' + esc(ctx.gym) + ', ke rumahmu (' + esc(areasText(SERVED)) + '), atau online.')) +
     coachBlock() +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Program</p><h2 class="h2 h2-sm">Satu tujuan, satu program untukmu</h2>' + programList() + '</div></section>' +
     '<section class="sec sec-paket"><div class="wrap"><p class="eyebrow">Cara kerja</p><h2 class="h2 h2-sm">Dari konsultasi sampai hasil terukur</h2>' + stepList(STEPS) + '</div></section>' +
@@ -508,24 +612,30 @@ function buildSitemap(paket, kelas) {
   const urls = [['/', '1.0'], ['/harga/', '0.9']];
   if (!paket.packages.length) urls.splice(1, 1);
   Object.keys(CITIES).forEach(k => urls.push(['/' + CITIES[k].slug + '/', '0.9']));
-  urls.push(['/' + ONLINE.slug + '/', '0.8']);
+  urls.push(['/' + HOME.slug + '/', '0.8'], ['/' + ONLINE.slug + '/', '0.8']);
+  Object.keys(PROGRAM_PAGES).forEach(k => urls.push(['/program/' + k + '/', '0.7']));
   urls.push(['/tentang/', '0.6'], ['/privasi/', '0.3']);
   if (kelas.length) urls.push(['/kelas/', '0.7']);
   return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(u => '  <url><loc>' + BASE + u[0] + '</loc>' + lm + '<priority>' + u[1] + '</priority></url>').join('\n') + '\n</urlset>\n';
 }
+// Search and AI answer engines are welcome by name (GEO): the site is public marketing text only.
+const AI_BOTS = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bingbot', 'CCBot'];
 function buildRobots() {
-  return 'User-agent: *\nAllow: /\n\nSitemap: ' + BASE + '/sitemap.xml\n';
+  return 'User-agent: *\nAllow: /\n\n' + AI_BOTS.map(b => 'User-agent: ' + b + '\nAllow: /\n').join('\n') + '\nSitemap: ' + BASE + '/sitemap.xml\n';
 }
 function buildLlms(paket, kelas) {
   const lines = [
     '# ' + NAME, '',
-    '> ' + COACH + ' adalah personal trainer berbasis sport science di ' + AREAS.join(' dan ') + ', Jawa Tengah, Indonesia. Program: ' + PROGRAMS.join(', ') + '. Tersedia 1 sesi trial gratis.', '',
+    '> ' + COACH + ' adalah personal trainer (PT gym, coach gym) berbasis sport science di ' + areasText(AREAS) + ', Jawa Tengah, Indonesia. Latihan di gym, ke rumah (' + areasText(SERVED) + '), atau online. Program: ' + PROGRAMS.join(', ') + '. Tersedia 1 sesi trial gratis.', '',
     '## Halaman', '',
     '- [Beranda](' + BASE + '/): profil coach, program, jadwal slot kosong, FAQ',
     '- [Harga](' + BASE + '/harga/): daftar paket dan harga (Rupiah)'
   ].concat(Object.keys(CITIES).map(k => '- [Personal Trainer ' + CITIES[k].nama + '](' + BASE + '/' + CITIES[k].slug + '/): layanan personal training tatap muka di ' + CITIES[k].nama))
-    .concat(['- [Personal Trainer Online](' + BASE + '/' + ONLINE.slug + '/): latihan online dari Purwokerto, Banjarnegara, atau kota lain',
+    .concat(['- [Personal Trainer ke Rumah](' + BASE + '/' + HOME.slug + '/): private trainer panggilan di ' + areasText(HOME.areas),
+      '- [Personal Trainer Online](' + BASE + '/' + ONLINE.slug + '/): latihan online dari ' + areasText(AREAS) + ', atau kota lain'])
+    .concat(Object.keys(PROGRAM_PAGES).map(k => '- [Program ' + PROGRAM_PAGES[k].name + '](' + BASE + '/program/' + k + '/): ' + PROGRAM_TEXT[PROGRAM_PAGES[k].name]))
+    .concat([
       '- [Tentang](' + BASE + '/tentang/): siapa di balik situs ini, lokasi, kontak, cara pembayaran',
       '- [Kebijakan privasi](' + BASE + '/privasi/): data yang dikumpulkan dan hak pengguna']);
   if (kelas.length) lines.push('- [Kelas](' + BASE + '/kelas/): jadwal dan harga kelas');
@@ -544,12 +654,32 @@ function buildLlms(paket, kelas) {
     lines.push('');
   }
   lines.push('## Verifikasi', '',
-    '- Pemilik: ' + COACH_FULL_NAME + ' (' + COACH + '), personal trainer di ' + AREAS.join(' dan ') + '. Instagram: ' + INSTAGRAM,
+    '- Pemilik: ' + COACH_FULL_NAME + ' (' + COACH + '), personal trainer di ' + areasText(AREAS) + '. Instagram: ' + INSTAGRAM,
     '- Situs ini tidak memproses pembayaran dan tidak meminta kata sandi, PIN, OTP, atau data kartu.');
   COACH_SOURCES.forEach(x => lines.push('- Sumber: [' + x.name + '](' + x.url + ')'));
   lines.push('');
-  lines.push('## Kontak', '', '- WhatsApp: +' + WA_NUMBER, '- Lokasi: ' + AREAS.join(', '), '');
+  const l = LOKASI.purwokerto || {};
+  lines.push('## Kontak', '', '- WhatsApp: +' + WA_NUMBER, '- Area: ' + SERVED.join(', ') + ' (tatap muka dan ke rumah), seluruh Indonesia (online)');
+  if (l.alamat) lines.push('- Tempat latihan: ' + (l.nama ? l.nama + ', ' : '') + l.alamat + (l.kodePos ? ' ' + l.kodePos : ''));
+  lines.push('', '## Tanya jawab singkat', '');
+  const ctx = pageCtx(paket);
+  [CITIES.purwokerto, CITIES.banyumas, HOME].forEach(src => src.faq.slice(0, 3).forEach(([q, a]) => lines.push('- **' + q + '** ' + fill(a(ctx), ctx))));
+  lines.push('', 'Isi lengkap semua halaman: ' + BASE + '/llms-full.txt', '');
   return lines.join('\n');
+}
+// Every keyword page as plain text, for AI answer engines that read llms-full.txt.
+function textOf(html) {
+  const main = html.slice(html.indexOf('<main>'), html.indexOf('</main>'))
+    .replace(/<div class="hero-actions">[\s\S]*?<\/div>/g, '').replace(/<div class="seg"[^>]*>(?:<a[^>]*>[^<]*<\/a>)*<\/div>/g, '').replace(/<\/a>/g, '</a> ');
+  return main.replace(/<(h1|h2|h3)[^>]*>/g, m => '\n\n' + { h1: '# ', h2: '## ', h3: '### ' }[m.slice(1, 3)]).replace(/<\/(p|li|dd|summary|h1|h2|h3)>/g, '\n')
+    .replace(/<dt>/g, '- ').replace(/<\/dt>/g, ': ').replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+    .replace(/[ \t]+/g, ' ').replace(/\n /g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function buildLlmsFull(out) {
+  const pages = Object.keys(out).filter(f => f.endsWith('/index.html') && /content="index, follow/.test(out[f]) && out[f].includes('<main>'));
+  return '# ' + NAME + ': isi lengkap\n\n> Teks halaman ' + BASE + ' dalam satu file. Ringkasan: ' + BASE + '/llms.txt\n\n' +
+    pages.map(f => '---\n\nURL: ' + BASE + '/' + f.replace(/index\.html$/, '') + '\n\n' + textOf(out[f])).join('\n\n') + '\n';
 }
 
 // ── run ──────────────────────────────────────────────────────────────────────
@@ -557,6 +687,7 @@ function buildLlms(paket, kelas) {
 function build(files) {
   LOKASI = cleanLokasi(files.lokasi);
   const paket = cleanPaket(files.paket), kelas = cleanKelas(files.kelas);
+  MODIFIED = paket.updatedAt ? String(paket.updatedAt).slice(0, 10) : null;
   const out = {
     'index.html': renderIndex(files.index, paket, kelas),
     'harga/index.html': buildHarga(paket, kelas),
@@ -567,9 +698,12 @@ function build(files) {
   };
   Object.keys(CITIES).forEach(k => { out[CITIES[k].slug + '/index.html'] = buildCity(k, paket, kelas); });
   out[ONLINE.slug + '/index.html'] = buildOnline(paket, kelas);
+  out[HOME.slug + '/index.html'] = buildHome(paket, kelas);
+  Object.keys(PROGRAM_PAGES).forEach(k => { out['program/' + k + '/index.html'] = buildProgram(k, paket, kelas); });
   out['tentang/index.html'] = buildTentang(paket, kelas);
   out['privasi/index.html'] = buildPrivasi(paket, kelas);
   out['.well-known/security.txt'] = buildSecurityTxt();
+  out['llms-full.txt'] = buildLlmsFull(out);
   return out;
 }
 

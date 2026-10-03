@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-01T13:57:06.559Z",
+  "updatedAt": "2026-10-03T11:42:00.073Z",
   "categories": [
     {
       "id": "student",
@@ -16,6 +16,10 @@
     {
       "id": "premium",
       "label": "Premium"
+    },
+    {
+      "id": "core",
+      "label": "Core"
     }
   ],
   "packages": [
@@ -333,6 +337,75 @@
       "deskripsi": "Hanya Pendampingan 1 Sesi",
       "benefit": [
         "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261001-CQF3",
+      "namaPaket": "Couple - Program",
+      "kategori": "core",
+      "harga": 2000000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket personal training untuk dua orang dengan 8 sesi selama 1 bulan. Latihan terarah dengan jadwal fleksibel, disesuaikan dengan tujuan dan kemampuan masing-masing peserta.",
+      "benefit": [
+        "Pendampingan Personal Trainer untuk Dua Peserta",
+        "Evaluasi dan Koreksi Teknik Gerakan",
+        "Penyusunan Program Latihan Sesuai Tujuan Individu"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261001-N3V5",
+      "namaPaket": "Trio - Program",
+      "kategori": "core",
+      "harga": 2800000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket personal training untuk tiga orang dengan 8 pertemuan dan program latihan bersama yang terstruktur. Berlatih bersama teman dengan pendampingan trainer serta penyesuaian beban dan tingkat kesulitan sesuai kemampuan masing-masing.",
+      "benefit": [
+        "Pendampingan Personal Trainer untuk 3 Peserta",
+        "8 Sesi Latihan Bersama",
+        "Penyusunan Program Latihan Kelompok",
+        "Koreksi Teknik dan Postur Gerakan",
+        "Penyesuaian Beban dan Intensitas Individu",
+        "Pemantauan Perkembangan Latihan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261001-VMFO",
+      "namaPaket": "ONLINE PERSONAL COACHING",
+      "kategori": "core",
+      "harga": 1500000,
+      "jumlahSesi": 12,
+      "durasi": "1 Bulan",
+      "deskripsi": "Pendampingan latihan online untuk kamu yang ingin berlatih mandiri dengan arahan personal trainer. Dilengkapi program latihan personal, evaluasi mingguan, dan feedback teknik melalui video.",
+      "benefit": [
+        "Konsultasi Awal dan Penetapan Target",
+        "Penyusunan Program Latihan Personal",
+        "Jadwal/Set/Repetisi dan Panduan Progres",
+        "Check-in dan Evaluasi Mingguan",
+        "Review Teknik Gerakan melalui Video",
+        "Penyesuaian Program berdasarkan Perkembangan",
+        "Konsultasi Latihan melalui WhatsApp pada Jam Layanan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261001-C9N9",
+      "namaPaket": "FULL BODY CIRCUIT",
+      "kategori": "core",
+      "harga": 3000000,
+      "jumlahSesi": 8,
+      "durasi": "1 Bulan",
+      "deskripsi": "Kelas workout berkelompok selama 45 menit yang menggabungkan bodyweight, dumbbell, dan latihan core untuk melatih daya tahan otot serta kebugaran umum. Dipandu personal trainer dengan koreksi teknik dan penyesuaian intensitas sesuai kemampuan. Maksimal 8 peserta per kelas. Harga berlaku per orang.",
+      "benefit": [
+        "Program Latihan Seluruh Tubuh yang Terstruktur",
+        "Pendampingan Personal Trainer",
+        "Koreksi Teknik dan Postur Gerakan",
+        "Penyesuaian Intensitas Sesuai Kemampuan",
+        "Latihan Daya Tahan Otot dan Stabilitas Core"
       ],
       "aktif": true
     }

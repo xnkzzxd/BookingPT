@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-03T11:42:00.073Z",
+  "updatedAt": "2026-10-11T05:48:29.520Z",
   "categories": [
     {
       "id": "student",
@@ -342,7 +342,7 @@
     },
     {
       "id": "PKG-20261001-CQF3",
-      "namaPaket": "Couple - Program",
+      "namaPaket": "Couple - Program 8 Session",
       "kategori": "core",
       "harga": 2000000,
       "jumlahSesi": 8,
@@ -356,8 +356,41 @@
       "aktif": true
     },
     {
+      "id": "PKG-20261011-S463",
+      "namaPaket": "Couple - Program 4 Session",
+      "kategori": "core",
+      "harga": 1100000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket personal training untuk dua orang dengan 4 sesi selama 1 bulan. Latihan terarah dengan jadwal fleksibel, disesuaikan dengan tujuan dan kemampuan masing-masing peserta.",
+      "benefit": [
+        "Pendampingan Personal Trainer untuk Dua Peserta",
+        "Evaluasi dan Koreksi Teknik Gerakan",
+        "Penyusunan Program Latihan Sesuai Tujuan Individu"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261011-VJOU",
+      "namaPaket": "Trio - Program 4 Session",
+      "kategori": "core",
+      "harga": 1900000,
+      "jumlahSesi": 4,
+      "durasi": "1 Bulan",
+      "deskripsi": "Paket personal training untuk tiga orang dengan 4 pertemuan dan program latihan bersama yang terstruktur. Berlatih bersama teman dengan pendampingan trainer serta penyesuaian beban dan tingkat kesulitan sesuai kemampuan masing-masing.",
+      "benefit": [
+        "Pendampingan Personal Trainer untuk 3 Peserta",
+        "8 Sesi Latihan Bersama",
+        "Penyusunan Program Latihan Kelompok",
+        "Koreksi Teknik dan Postur Gerakan",
+        "Penyesuaian Beban dan Intensitas Individu",
+        "Pemantauan Perkembangan Latihan"
+      ],
+      "aktif": true
+    },
+    {
       "id": "PKG-20261001-N3V5",
-      "namaPaket": "Trio - Program",
+      "namaPaket": "Trio - Program 8 Session",
       "kategori": "core",
       "harga": 2800000,
       "jumlahSesi": 8,
@@ -370,6 +403,24 @@
         "Koreksi Teknik dan Postur Gerakan",
         "Penyesuaian Beban dan Intensitas Individu",
         "Pemantauan Perkembangan Latihan"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261001-OQFB",
+      "namaPaket": "Program Only",
+      "kategori": "core",
+      "harga": 1000000,
+      "jumlahSesi": "",
+      "durasi": "4 Minggu",
+      "deskripsi": "Program latihan personal untuk kamu yang ingin berlatih mandiri dengan panduan terstruktur. Disusun berdasarkan tujuan, pengalaman latihan, jadwal, dan ketersediaan alat.",
+      "benefit": [
+        "Konsultasi Awal melalui Formulir",
+        "Penyusunan Program Latihan Personal",
+        "Jadwal dan Pembagian Latihan Mingguan",
+        "Panduan Set/Repetisi dan Waktu Istirahat",
+        "Panduan Progres Latihan",
+        "Alternatif Gerakan sesuai Ketersediaan Alat"
       ],
       "aktif": true
     },

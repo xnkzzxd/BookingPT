@@ -50,7 +50,7 @@ test('index.html: markers rebuilt idempotently, iframe and booking untouched, no
   const once = build({ index: INDEX, paket: PAKET, kelas: [] })['index.html'];
   const twice = build({ index: once, paket: PAKET, kelas: [] })['index.html'];
   assert.equal(once, twice);
-  assert.ok(once.includes('src="https://script.google.com/macros/s/') && once.includes('view=Landing'));
+  assert.ok(once.includes('<iframe id="app"') && once.includes('src="/l/"'));
   assert.ok(once.includes('<a href="/harga/">Lihat semua harga</a>'));
   assert.ok(!once.includes('Aktifkan JavaScript untuk membuka'), 'old overlay noscript removed');
 });

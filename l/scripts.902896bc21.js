@@ -1,0 +1,95 @@
+
+    // =============================================================================
+    // Helper bersama. Dipakai Index.html (panel PT & portal klien, lewat App.html)
+    // DAN Landing.html. Semua deklarasi di sini global (top-level) — jangan dibungkus
+    // IIFE, dan jangan pakai nama yang sama dengan deklarasi top-level di Landing
+    // (lihat LandingScript.html) atau App.html.
+    // =============================================================================
+    function formatRp(angka) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+    }
+
+    // Nomor WA Indonesia ke format 62xxxxxxxxxx (digit saja).
+    function sanitizePhone(phone) {
+      let p = String(phone == null ? '' : phone).replace(/\D/g, '');
+      if (p.startsWith('0')) p = '62' + p.substring(1);
+      else if (p.startsWith('8')) p = '62' + p;
+      return p;
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Token sesi di perangkat ini. book.xnkbooking.my.id & xnkbooking.my.id berbagi
+    // penyimpanan, jadi login dari Landing langsung terbawa ke portal klien.
+    const ADMIN_TOKEN_KEY = 'xnk_admin_token';
+    const MEMBER_TOKEN_KEY = 'xnk_member_token';
+    function _lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function _lsSet(k, v) { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) {} }
+
+    // ── Panggilan ke server (Phase AAA) ─────────────────────────────────────────
+    // Satu pintu untuk semua panggilan: rpc(nama, [argumen]) -> Promise.
+    //   1. window.XNK_TRANSPORT(nama, argumen)  override (demo dan tes)
+    //   2. google.script.run                     halaman disajikan Apps Script
+    //   3. fetch ke XNK_CONFIG.exec (doPost)     halaman statis di GitHub Pages
+    // Galatnya sama bentuknya di ketiga jalur: Error dengan .message; sesi habis memuat
+    // 'AUTH_REQUIRED' (isAuthError), jaringan putus cocok dengan pola 'network|koneksi|failed to fetch'.
+    const XNK_API_MIN = 1;   // versi balasan doPost terendah yang dipahami halaman ini (Kode.gs API_VERSION)
+    function hasServer() {
+      if (typeof window.XNK_TRANSPORT === 'function') return true;
+      if (typeof google !== 'undefined' && google.script && google.script.run) return true;
+      return !!(window.XNK_CONFIG && window.XNK_CONFIG.exec);
+    }
+    function rpc(fn, args) {
+      args = args || [];
+      if (typeof window.XNK_TRANSPORT === 'function') {
+        return new Promise(function (resolve) { resolve(window.XNK_TRANSPORT(fn, args)); });
+      }
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        return new Promise(function (resolve, reject) {
+          const r = google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
+          r[fn].apply(r, args);
+        });
+      }
+      if (window.XNK_CONFIG && window.XNK_CONFIG.exec) return _rpcFetch(fn, args);
+      return Promise.reject(new Error('Mode pratinjau: server tidak tersedia.'));
+    }
+    function _rpcFetch(fn, args) {
+      const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      const ms = window.XNK_RPC_TIMEOUT || 60000;
+      let timedOut = false;
+      const timer = ctl ? setTimeout(function () { timedOut = true; ctl.abort(); }, ms) : null;
+      return fetch(window.XNK_CONFIG.exec, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },   // tanpa preflight CORS
+        body: JSON.stringify({ fn: fn, args: args }),
+        credentials: 'omit',
+        redirect: 'follow',
+        signal: ctl ? ctl.signal : undefined,
+      }).then(function (r) {
+        return r.json().then(null, function () { throw new Error('Koneksi ke server terputus (HTTP ' + r.status + ').'); });
+      }, function (e) {
+        throw new Error('NetworkError: ' + (timedOut ? 'timed out' : String((e && e.message) || e)));
+      }).then(function (j) {
+        if (timer) clearTimeout(timer);
+        if (!j || typeof j !== 'object' || typeof j.v !== 'number' || j.v < XNK_API_MIN) {
+          throw new Error('Versi aplikasi belum cocok. Muat ulang halaman.');
+        }
+        if (!j.ok) throw new Error((j.auth ? 'AUTH_REQUIRED: ' : '') + (j.error || 'Terjadi kesalahan.'));
+        return j.data;
+      }, function (e) { if (timer) clearTimeout(timer); throw e; });
+    }
+
+    // Jam latihan per hari (0 = Minggu): [jam mulai, jam selesai). Dipakai portal klien
+    // (pilih jam) dan Landing (slot kosong minggu ini).
+    const DAY_HOURS = { 0: [6, 12], 1: [6, 21], 2: [6, 21], 3: [6, 21], 4: [6, 21], 5: [6, 21], 6: [6, 21] };
+    // Jam yang dipilih di Landing: {date:'YYYY-MM-DD', time:'HH:MM'}. Portal membuka form
+    // booking dengan jam itu setelah klien masuk.
+    const PENDING_SLOT_KEY = 'xnk_pending_slot';

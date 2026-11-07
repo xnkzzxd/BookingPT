@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, viewport-fit=cover">
+  <script src="config.js"></script>
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="icon" href="https://xnkbooking.my.id/favicon.ico">
+  <title>Coach Jizdan · XNK Personal Training</title>
+  <meta name="description" content="Personal trainer berbasis sport science di Banjarnegara & Purwokerto bersama Coach Jizdan. Fat loss, muscle building, strength & conditioning, sports performance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="https://xnkbooking.my.id/img/hero-cutout.webp" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
+  <link rel="stylesheet" href="landing.fb064d97a8.css">
+</head>
+<body class="is-loading">
+
+  <!-- ============ INTRO (hitungan 0–100) ============ -->
+  <div id="intro" class="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <span class="logo-mark logo-mark-lg"><svg viewBox="0 0 948 895" fill="#fff" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M630 2L774 2L475 365L280 128L425 128L476 190ZM1 128L145 128L670 768L526 768L474 706L319 895L176 895L403 619L337 536L145 768L1 768L263 449ZM806 130L947 130L687 448L947 768L806 768L543 448Z"/></svg></span>
+      <div class="intro-num"><span id="intro-num">00</span></div>
+      <div class="intro-bar"><i id="intro-bar"></i></div>
+      <p class="intro-cap">XNK Personal Training · Coach Jizdan</p>
+    </div>
+  </div>
+
+  <!-- Kursor khusus (desktop) -->
+  <div class="cursor" aria-hidden="true"><div class="cursor-dot"></div><div class="cursor-ring"><span class="cursor-label"></span></div></div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <button type="button" class="logo" data-go="top" aria-label="XNK, ke atas">
+      <span class="logo-mark"><svg viewBox="0 0 948 895" fill="#fff" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M630 2L774 2L475 365L280 128L425 128L476 190ZM1 128L145 128L670 768L526 768L474 706L319 895L176 895L403 619L337 536L145 768L1 768L263 449ZM806 130L947 130L687 448L947 768L806 768L543 448Z"/></svg></span>
+      <span class="logo-word">XNK</span>
+    </button>
+    <nav class="nav-links" aria-label="Menu">
+      <button type="button" class="nav-link" data-go="coach">Coach</button>
+      <button type="button" class="nav-link" data-go="program">Program</button>
+      <button type="button" class="nav-link" data-go="paket">Paket</button>
+      <button type="button" class="nav-link" data-go="jadwal">Jadwal</button>
+      <button type="button" class="nav-link" data-info="faq">Info &amp; FAQ</button>
+    </nav>
+    <button type="button" class="btn btn-dark btn-sm nav-cta magnetic" onclick="openMemberCheck()">Sudah member?<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button type="button" class="burger" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="m-menu"><span></span><span></span></button>
+  </header>
+
+  <!-- Menu layar penuh (mobile) -->
+  <div class="m-menu" id="m-menu" aria-hidden="true">
+    <nav class="m-menu-links" aria-label="Menu">
+      <button type="button" data-go="coach"><small>01</small>Coach</button>
+      <button type="button" data-go="program"><small>02</small>Program</button>
+      <button type="button" data-go="paket"><small>03</small>Paket</button>
+      <button type="button" data-go="jadwal"><small>04</small>Jadwal</button>
+      <button type="button" data-info="faq"><small>05</small>Info &amp; FAQ</button>
+    </nav>
+    <div class="m-menu-foot">
+      <button type="button" class="btn btn-light btn-block" onclick="openMemberCheck()">Mulai Sekarang</button>
+      <a class="m-menu-wa" href="https://wa.me/6288221254305?text=Halo%20Coach%20Jizdan%2C%20saya%20mau%20tanya%20program%20personal%20training." target="_blank" rel="noopener">Chat WhatsApp →</a>
+    </div>
+  </div>
+
+  <main id="top">
+
+    <!-- ============ HERO DESKTOP: JIZDAN di belakang badan ============ -->
+    <section class="hero hero-desk" id="hero-desk" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-labels" aria-hidden="true"><span>Personal Trainer · Sport Science</span><span>Banjarnegara &amp; Purwokerto</span></div>
+        <div class="giant" aria-hidden="true">
+          <span class="giant-half giant-l"><span class="ch">J</span><span class="ch">I</span><span class="ch">Z</span></span><span class="giant-half giant-r"><span class="ch">D</span><span class="ch">A</span><span class="ch">N</span></span>
+        </div>
+        <div class="hero-gap"></div>
+        <div class="hero-bottom">
+          <div class="hero-copy">
+            <h1 class="hero-title" id="hero-title">Move Better.<br>Get Stronger.<br><span class="outline">Perform Better.</span></h1>
+            <p class="hero-sub">Berbasis sport science: fat loss, muscle building &amp; performa olahraga, dilatih langsung oleh <b>Coach Jizdan</b>, guru pendidikan jasmani, pelatih pencak silat &amp; personal trainer.</p>
+            <div class="hero-actions">
+              <button type="button" class="btn btn-dark magnetic" onclick="openMemberCheck()">Mulai Sekarang<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+              <button type="button" class="btn btn-line magnetic" data-go="coach">Kenali Coach</button>
+            </div>
+          </div>
+          <div class="hero-side">
+            <p class="hero-hint"><span class="hint-line"></span>Scroll untuk lanjut</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="figure figure-desk" id="figure-desk">
+        <img class="figure-img" src="https://xnkbooking.my.id/img/hero-cutout.webp" alt="Coach Jizdan, tampak punggung" width="795" height="1041" crossorigin="anonymous" decoding="async" fetchpriority="high">
+        <canvas class="figure-gl" aria-hidden="true"></canvas>
+      </div>
+    </section>
+
+    <!-- ============ HERO MOBILE: tipografi saja ============ -->
+    <section class="hero hero-m" id="hero-m" aria-labelledby="hero-m-title">
+      <div class="wrap hm-inner">
+        <p class="hm-word" aria-hidden="true">JIZDAN</p>
+        <p class="eyebrow">Banjarnegara &amp; Purwokerto</p>
+        <h1 class="hm-title" id="hero-m-title">Move Better.<br>Get Stronger.<br><span class="outline">Perform Better.</span></h1>
+        <p class="hm-sub">Berbasis sport science: fat loss, muscle building &amp; performa olahraga, dilatih langsung oleh <b>Coach Jizdan</b>.</p>
+        <button type="button" class="hm-down" data-go="coach">Kenali Coach<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+      </div>
+    </section>
+
+    <div class="stack">
+
+      <!-- ============ STATISTIK ============ -->
+      <section class="sec sec-stats card-sec" id="stats" aria-label="Statistik">
+        <div class="wrap stats-grid" data-stagger>
+          <div class="stat"><span class="stat-num"><span id="stat-sessions" data-count>–</span></span><span class="stat-lbl">Sesi latihan selesai</span></div>
+          <div class="stat"><span class="stat-num"><span id="stat-clients" data-count>–</span></span><span class="stat-lbl">Klien terdaftar</span></div>
+          <div class="stat" id="stat-satisfaction-wrap"><span class="stat-num"><span id="stat-satisfaction" data-count>–</span></span><span class="stat-lbl">Klien puas</span></div>
+          <div class="stat" id="stat-rating-wrap"><span class="stat-num"><span id="stat-rating" data-count>–</span><small>★</small></span><span class="stat-lbl">Rating rata-rata</span></div>
+        </div>
+      </section>
+
+      <!-- ============ COACH ============ -->
+      <section class="sec sec-coach card-sec" id="coach" aria-labelledby="coach-title">
+        <div class="wrap coach-grid">
+          <figure class="coach-photo" data-clip>
+            <img src="https://lh3.googleusercontent.com/d/1wJm5BrOkFDAdmyjVm1rJ0Vq0nps3E31g" alt="Coach Jizdan" loading="lazy">
+            <figcaption>Coach Jizdan</figcaption>
+          </figure>
+          <div class="coach-copy">
+            <p class="eyebrow">Coach Jizdan</p>
+            <h2 class="h2 split" id="coach-title">Guru Pendidikan Jasmani, Pelatih Pencak Silat Bersertifikat &amp; Personal Trainer.</h2>
+            <p class="lead" data-reveal>Dengan latar belakang pendidikan olahraga dan pengalaman melatih atlet, pelajar, mahasiswa, hingga masyarakat umum, setiap program disusun berdasarkan prinsip ilmiah, bukan tren fitness sesaat.</p>
+            <ul class="coach-points" data-stagger>
+              <li><b>Beragam klien.</b> Pemula, mahasiswa, pekerja kantoran, hingga atlet.</li>
+              <li><b>Edukatif.</b> Kamu paham tubuhmu sendiri, tidak bergantung pada coach.</li>
+              <li><b>Terukur.</b> Berat badan, lingkar tubuh, kekuatan, dan performa dicatat berkala.</li>
+            </ul>
+            <button type="button" class="link-more" data-info="proses">Lihat proses coaching &rarr;</button>
+            <ul class="tags" data-stagger>
+              <li>Fat Loss</li><li>Muscle Building</li><li>Strength &amp; Conditioning</li><li>Sports Performance</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PROGRAM LATIHAN ============ -->
+      <section class="sec sec-program card-sec" id="program" aria-labelledby="program-title">
+        <div class="program-pin">
+          <div class="wrap program-head">
+            <div>
+              <p class="eyebrow">Program Latihan</p>
+              <h2 class="h2 split" id="program-title">Satu tujuan. Satu program untukmu.</h2>
+            </div>
+            <div class="program-nav-wrap">
+              <div class="program-count" aria-hidden="true"><span id="program-idx">01</span> / 04</div>
+              <div class="program-nav">
+                <button type="button" class="program-nav-btn" id="program-prev" aria-label="Program sebelumnya"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+                <button type="button" class="program-nav-btn" id="program-next" aria-label="Program berikutnya"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div class="program-viewport" id="program-viewport">
+            <div class="program-track" id="program-track" data-stagger>
+              <article class="prog" data-cursor="Pilih">
+                <span class="prog-num">01</span>
+                <div class="prog-body">
+                  <h3 class="prog-title">Fat Loss</h3>
+                  <p>Turunkan lemak tanpa kehilangan otot. Latihan kekuatan dan kondisi, dipadu kebiasaan makan yang realistis.</p>
+                  <ul><li>Komposisi tubuh dipantau</li><li>Latihan beban + conditioning</li><li>Target realistis per bulan</li></ul>
+                  <button type="button" class="btn btn-dark" data-goal="Weight Loss">Pilih program<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                </div>
+              </article>
+              <article class="prog prog-dark" data-cursor="Pilih">
+                <span class="prog-num">02</span>
+                <div class="prog-body">
+                  <h3 class="prog-title">Muscle Building</h3>
+                  <p>Hipertrofi terprogram: volume, beban, dan teknik yang benar supaya otot tumbuh aman dan konsisten.</p>
+                  <ul><li>Progressive overload terukur</li><li>Teknik &amp; tempo dikoreksi</li><li>Split sesuai jadwalmu</li></ul>
+                  <button type="button" class="btn btn-light" data-goal="Muscle Building">Pilih program<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                </div>
+              </article>
+              <article class="prog" data-cursor="Pilih">
+                <span class="prog-num">03</span>
+                <div class="prog-body">
+                  <h3 class="prog-title">Strength &amp; Conditioning</h3>
+                  <p>Lebih kuat, lebih bertenaga, lebih tahan lama. Fondasi gerak untuk aktivitas harian maupun olahraga.</p>
+                  <ul><li>Tes kekuatan &amp; mobilitas</li><li>Power, stamina, stabilitas</li><li>Aman untuk pemula</li></ul>
+                  <button type="button" class="btn btn-dark" data-goal="Strength Training">Pilih program<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                </div>
+              </article>
+              <article class="prog prog-dark" data-cursor="Pilih">
+                <span class="prog-num">04</span>
+                <div class="prog-body">
+                  <h3 class="prog-title">Sports Performance</h3>
+                  <p>Kecepatan, power, dan kelincahan sesuai cabang olahragamu, dari pencak silat sampai futsal.</p>
+                  <ul><li>Program per cabang olahraga</li><li>Latihan eksplosif &amp; agility</li><li>Pencegahan cedera</li></ul>
+                  <button type="button" class="btn btn-light" data-goal="Sports Performance">Pilih program<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                </div>
+              </article>
+            </div>
+          </div>
+          <div class="wrap program-progress" aria-hidden="true"><i id="program-bar"></i></div>
+        </div>
+      </section>
+
+      <!-- ============ TESTIMONI ============ -->
+      <section class="sec sec-testi card-sec" id="testimoni" aria-labelledby="testi-title">
+        <div class="wrap">
+          <div class="sec-head">
+            <p class="eyebrow">Testimoni Nyata</p>
+            <h2 class="h2 split" id="testi-title">Hasil Klien Kami</h2>
+          </div>
+          <div class="testi-grid" id="testimonial-grid">
+            <div class="testi skeleton"></div><div class="testi skeleton"></div><div class="testi skeleton"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PAKET ============ -->
+      <section class="sec sec-paket card-sec" id="paket" aria-labelledby="paket-title">
+        <div class="wrap">
+          <div class="sec-head sec-head-row">
+            <div>
+              <p class="eyebrow">Pilih Paket</p>
+              <h2 class="h2 split" id="paket-title">Investasi untuk Dirimu</h2>
+              <p class="lead" data-reveal>Pilih paket yang sesuai dengan kebutuhanmu. Semua paket sudah termasuk sesi 1-on-1 dengan coach profesional.</p>
+            </div>
+            <div class="seg hide" id="category-toggles" role="tablist" aria-label="Kategori paket"></div>
+          </div>
+          <div class="price-track" id="pricing-track">
+            <div class="price skeleton"></div><div class="price skeleton"></div><div class="price skeleton"></div>
+          </div>
+          <div class="price-dots" id="price-dots" aria-hidden="true"></div>
+          <p class="price-all"><a href="https://xnkbooking.my.id/harga/" target="_top">Lihat semua harga &amp; paket →</a></p>
+          <div class="consult">
+            <p>Ada pertanyaan tentang paket? <b>Konsultasi gratis dulu!</b></p>
+            <a class="btn btn-line" href="https://wa.me/6288221254305?text=Halo%20Coach%20Jizdan%2C%20saya%20mau%20konsultasi%20paket%20personal%20training." target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 012.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0012.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41z"/></svg>Konsultasi Gratis</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLOT KOSONG MINGGU INI ============ -->
+      <section class="sec sec-slots card-sec" id="jadwal" aria-labelledby="slots-title">
+        <div class="wrap">
+          <div class="sec-head sec-head-row">
+            <div>
+              <p class="eyebrow">Jadwal Minggu Ini</p>
+              <h2 class="h2 split" id="slots-title">Slot kosong minggu ini</h2>
+              <p class="lead" data-reveal>Jam dihitung langsung dari jadwal coach. Pilih jam yang kamu mau, lalu masuk atau daftar. Form booking akan terbuka dengan jam itu.</p>
+            </div>
+            <p class="slots-live" id="slots-live"><span class="live-dot"></span><span id="slots-live-text">Live</span></p>
+          </div>
+          <div class="slot-coaches" id="slot-coaches" hidden></div>
+          <div class="slot-days" id="slot-days" role="tablist" aria-label="Pilih hari"></div>
+          <div class="slot-check" id="slot-check" role="status" aria-live="polite" hidden>
+            <span class="slot-spin" aria-hidden="true"></span>
+            <div class="slot-check-body"><p class="slot-check-text">Memeriksa jadwal…</p><span class="skeleton slot-bar"></span><span class="skeleton slot-bar short"></span></div>
+          </div>
+          <p class="slot-msg" id="slot-msg" role="alert" hidden></p>
+          <div class="slot-hours" id="slot-hours"><div class="slot-empty">Memuat jadwal…</div></div>
+        </div>
+      </section>
+
+    </div><!-- /.stack -->
+
+    <!-- ============ AJAKAN AKHIR ============ -->
+    <section class="sec sec-cta" id="cta" aria-labelledby="cta-title">
+      <div class="cta-giant" aria-hidden="true">SIAP?</div>
+      <div class="wrap cta-inner">
+        <h2 class="h2 split" id="cta-title">Siap Memulai Perjalananmu?</h2>
+        <p class="lead" data-reveal>1 sesi trial gratis. Tidak ada komitmen. Hanya kamu dan coach, wujudkan perubahan.</p>
+        <div class="cta-actions">
+          <button type="button" class="btn btn-light magnetic" onclick="openMemberCheck()">Booking Trial Gratis<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <a class="btn btn-ghost-light magnetic" href="https://wa.me/6288221254305?text=Halo%20Coach%20Jizdan%2C%20saya%20mau%20tanya%20program%20personal%20training." target="_blank" rel="noopener">Tanya via WhatsApp</a>
+          <button type="button" class="btn btn-ghost-light" data-info="faq">Pertanyaan umum</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <span class="logo"><span class="logo-mark logo-mark-light"><svg viewBox="0 0 948 895" fill="#0B0B0B" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M630 2L774 2L475 365L280 128L425 128L476 190ZM1 128L145 128L670 768L526 768L474 706L319 895L176 895L403 619L337 536L145 768L1 768L263 449ZM806 130L947 130L687 448L947 768L806 768L543 448Z"/></svg></span><span class="logo-word">XNK</span></span>
+        <p>Personal training berbasis sport science bersama Coach Jizdan. Banjarnegara &amp; Purwokerto.</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-h">Menu</p>
+        <button type="button" data-go="program">Program</button>
+        <button type="button" data-go="paket">Paket &amp; Jadwal</button>
+        <button type="button" data-info="proses">Proses Coaching</button>
+        <button type="button" data-info="faq">FAQ</button>
+        <a href="https://wa.me/6288221254305" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer-giant" aria-hidden="true">XNK</div>
+    <p class="wrap footer-copy">&copy; 2026 XNK Workspace. All rights reserved.</p>
+  </footer>
+
+  <!-- Bar bawah (mobile) -->
+  <div class="m-bar" id="m-bar">
+    <button type="button" class="btn btn-light m-bar-main" onclick="openMemberCheck()">Mulai Sekarang<svg class="icon arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <a class="m-bar-wa" href="https://wa.me/6288221254305?text=Halo%20Coach%20Jizdan%2C%20saya%20mau%20tanya%20program%20personal%20training." target="_blank" rel="noopener" aria-label="Chat WhatsApp"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 012.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0012.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41z"/></svg></a>
+  </div>
+
+  <!-- ============ HALAMAN INFO (Proses & FAQ) ============ -->
+  <div id="info-page" class="info-page" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Info lengkap" hidden>
+    <div class="info-bar wrap">
+      <button type="button" class="info-back" data-info-close>&larr; Kembali</button>
+      <div class="seg" role="tablist" aria-label="Info">
+        <button type="button" role="tab" class="info-tab active" data-info-tab="proses" aria-selected="true">Proses</button>
+        <button type="button" role="tab" class="info-tab" data-info-tab="faq" aria-selected="false">FAQ</button>
+      </div>
+    </div>
+    <div class="wrap info-body">
+      <section data-info-pane="proses">
+        <p class="eyebrow">Proses Coaching</p>
+        <h2 class="h2">Dari evaluasi menuju hasil nyata.</h2>
+        <p class="lead">Setiap klien memiliki kondisi, tujuan, dan kemampuan yang berbeda. Karena itu, program latihan disusun secara personal dan berbasis data.</p>
+        <ol class="steps" id="steps">
+            <li class="step"><span class="step-no">01</span><div><h3>Consultation</h3><p>Diskusi mengenai target yang ingin dicapai, riwayat latihan, kondisi kesehatan, jadwal harian, serta hambatan yang sering dihadapi.</p></div></li>
+            <li class="step"><span class="step-no">02</span><div><h3>Assessment</h3><p>Evaluasi komposisi tubuh, postur, mobilitas, kekuatan, daya tahan, dan kualitas gerak untuk menentukan titik awal latihan.</p></div></li>
+            <li class="step"><span class="step-no">03</span><div><h3>Training</h3><p>Program dirancang berdasarkan hasil assessment dan dijalankan melalui sesi personal training dengan pendampingan langsung dari coach 1-on-1.</p></div></li>
+            <li class="step"><span class="step-no">04</span><div><h3>Monitoring &amp; Evaluation</h3><p>Progres dipantau secara berkala melalui evaluasi performa dan perkembangan latihan. Program disesuaikan supaya hasil tetap optimal dan berkelanjutan.</p></div></li>
+          </ol>
+      </section>
+      <section data-info-pane="faq" hidden>
+        <p class="eyebrow">Pertanyaan Umum</p>
+        <h2 class="h2">FAQ</h2>
+        <p class="lead">Belum terjawab? Tanya langsung ke coach lewat WhatsApp.</p>
+        <div class="faq-list">
+            <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Apakah saya perlu punya pengalaman fitness?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><div><p>Tidak sama sekali! Program kami dirancang untuk semua level, dari pemula total hingga atlet. Coach akan menyesuaikan intensitas dan kompleksitas latihan sesuai kemampuanmu.</p></div></div></div>
+            <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Bagaimana sistem pembayarannya?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><div><p>Pembayaran dilakukan di awal per paket (bukan per sesi). Kami menerima transfer bank (BRI), e-wallet (DANA) &amp; cash. Setelah pembayaran dikonfirmasi, sesi kamu aktif dan bisa langsung booking jadwal.</p></div></div></div>
+            <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Apakah ada session expire?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><div><p>Ya, setiap paket memiliki masa berlaku 1 bulan. Tapi tenang, kami selalu ingatkan via WhatsApp sebelum masa berlaku habis!</p></div></div></div>
+            <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Bisa ganti jadwal di hari yang sama?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><div><p>Bisa! Kami mengerti ada keadaan darurat. Cukup hubungi coach via WhatsApp minimal 2 jam sebelum sesi untuk reschedule tanpa penalti.</p></div></div></div>
+            <div class="faq-item"><button type="button" class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Apakah ada sesi trial?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><div><p>Ada! Kami menyediakan 1 sesi trial gratis untuk kamu yang ingin merasakan latihan bersama coach sebelum memutuskan. Klik "Mulai Sekarang" untuk menjadwalkan trial.</p></div></div></div>
+        </div>
+      </section>
+      <div class="info-cta"><button type="button" class="btn btn-dark" onclick="openMemberCheck()">Mulai Sekarang</button></div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: Sudah member? / Member lama / Registrasi ============ -->
+  <div id="member-check-modal" class="modal hide" role="dialog" aria-modal="true" aria-label="Member">
+    <div class="modal-backdrop" onclick="closeMemberCheck()"></div>
+    <div class="modal-content"></div>
+  </div>
+
+  <script src="scripts.902896bc21.js"></script>
+  <script src="landing.e22793173f.js"></script>
+</body>
+</html>

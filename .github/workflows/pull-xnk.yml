@@ -1,0 +1,28 @@
+name: Tarik landing dari XNK
+
+# Landing statis dibangun di repo XNK (Phase AAA) dan diterbitkan di xnk.my.id/landing-pub/ dengan manifest berisi sha256.
+# Action ini menariknya ke folder l/ (dimuat iframe di index.html) dan commit kalau berubah. Data publik saja, tanpa secret.
+on:
+  schedule:
+    - cron: '41 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: pull-xnk
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node tools/pull-xnk.js landing-pub l
+      - name: Commit kalau berubah
+        run: |
+          git config user.name "xnk-bot"
+          git config user.email "xnk-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "Tidak ada perubahan."; else git commit -m "Tarik landing dari xnk.my.id" && git pull --rebase origin main && git push; fi

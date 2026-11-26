@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-11T05:48:29.520Z",
+  "updatedAt": "2026-11-26T21:33:17.065Z",
   "categories": [
     {
       "id": "student",
@@ -337,6 +337,37 @@
       "deskripsi": "Hanya Pendampingan 1 Sesi",
       "benefit": [
         "Didampingi 1-on-1 sampai selesai"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261126-V4AI",
+      "namaPaket": "Meal Plan Only",
+      "kategori": "premium",
+      "harga": 400000,
+      "jumlahSesi": "",
+      "durasi": "1 Bulan",
+      "deskripsi": "",
+      "benefit": [
+        "Meal Plan 1 Bulan",
+        "Adaptif",
+        "Fleksibel"
+      ],
+      "aktif": true
+    },
+    {
+      "id": "PKG-20261126-SSW1",
+      "namaPaket": "Meal Plan + Konsultasi Gizi",
+      "kategori": "premium",
+      "harga": 1200000,
+      "jumlahSesi": 1,
+      "durasi": "1 Bulan",
+      "deskripsi": "",
+      "benefit": [
+        "Meal Plan",
+        "Adaptif",
+        "Fleksibel",
+        "Dukungan Whatsapp"
       ],
       "aktif": true
     },
